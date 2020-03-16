@@ -57,6 +57,11 @@ async function main() {
     Object.entries(fileRules).forEach(([ name, rule ]) => {
       const ruleImpl = rules.get(name)
       if (ruleImpl) {
+        if (fileRules[name] === "off" || fileRules[name][0] === "off") {
+          delete fileRules[name]
+          return
+        }
+
         // console.log(ruleImpl.meta)
         if (ruleImpl.meta && ruleImpl.meta.fixable) {
           if (cli.flags.verbose) {
@@ -64,14 +69,17 @@ async function main() {
           }
         } else {
           // Disable all non-fixable rules
-          fileRules[name] = "off"
+          // fileRules[name] = "off"
+          delete fileRules[name]
         }
       } else {
         console.log(`Did not found rule ${name}!`)
       }
     })
 
-    // console.log("Config", fileConfig)
+    console.log("Config", fileConfig)
+
+
   })
 
   const queue = new PQueue({ concurrency: cli.flags.concurrency })
