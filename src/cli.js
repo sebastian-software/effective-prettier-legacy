@@ -1,14 +1,15 @@
 import path from "path"
+
 import meow from "meow"
 import { CLIEngine } from "eslint"
 import prettier from "prettier"
 import PQueue from "p-queue"
 
-async function run() {
+async function main() {
   const cli = meow(
     `
   Usage
-    $ lean-prettier-eslint <input>
+    $ prettier-eslint <input>
 
   Options
     --verbose, -v  Increase log level
@@ -42,40 +43,36 @@ async function run() {
   }
   const eslint = new CLIEngine(eslintOptions)
 
+  const fileTasks = cli.input.map((fileName) => async () => {
+    console.log("Processing: ", fileName)
 
-  const fileTasks = cli.input.map((fileName) => {
-    return async () => {
-      console.log("Processing: ", fileName)
+    const fileConfig = eslint.getConfigForFile(path.resolve(fileName))
 
-      const fileConfig = eslint.getConfigForFile(path.resolve(fileName))
+    const localEslint = new CLIEngine({
+      plugins: fileConfig.plugins
+    })
+    const rules = localEslint.getRules()
+    const fileRules = fileConfig.rules
 
-
-      const localEslint = new CLIEngine({
-        plugins: fileConfig.plugins
-      })
-      const rules = localEslint.getRules()
-      const fileRules = fileConfig.rules
-
-      Object.entries(fileRules).forEach(([name, rule]) => {
-        const ruleImpl = rules.get(name)
-        if (ruleImpl) {
-          //console.log(ruleImpl.meta)
-          if (ruleImpl.meta && ruleImpl.meta.fixable) {
-            if (cli.flags.verbose) {
-              //console.log("- Auto fixing: " + name)
-            }
-          } else {
-            // Disable all non-fixable rules
-            fileRules[name] = "off"
+    Object.entries(fileRules).forEach(([ name, rule ]) => {
+      const ruleImpl = rules.get(name)
+      if (ruleImpl) {
+        // console.log(ruleImpl.meta)
+        if (ruleImpl.meta && ruleImpl.meta.fixable) {
+          if (cli.flags.verbose) {
+            // console.log("- Auto fixing: " + name)
           }
         } else {
-          console.log("Did not found:", name)
-          // process.exit(1)
+          // Disable all non-fixable rules
+          fileRules[name] = "off"
         }
-      })
+      } else {
+        console.log("Did not found:", name)
+        // process.exit(1)
+      }
+    })
 
-      //console.log("Config", fileConfig)
-    }
+    // console.log("Config", fileConfig)
   })
 
   const queue = new PQueue({ concurrency: cli.flags.concurrency })
@@ -86,4 +83,4 @@ async function run() {
   await queue.addAll(fileTasks)
 }
 
-run()
+main()
