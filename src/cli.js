@@ -27,14 +27,14 @@ const cwdEsLint = new CLIEngine(eslintOptions)
 
 const eslintConfigCache = new Map()
 
-function getFileConfig(filePath, flags) {
+function getEslintInstance(filePath, flags) {
   const rawFileConfig = cwdEsLint.getConfigForFile(filePath)
   const stringifiedFileConfig = JSON.stringify(rawFileConfig)
 
-  const fileConfigCached = eslintConfigCache.get(stringifiedFileConfig)
-  if (fileConfigCached) {
+  const cachedEslintInstance = eslintConfigCache.get(stringifiedFileConfig)
+  if (cachedEslintInstance) {
     // console.log("Use config cache!")
-    return fileConfigCached
+    return cachedEslintInstance
   }
 
   const localEslint = new CLIEngine({
@@ -67,13 +67,16 @@ function getFileConfig(filePath, flags) {
     }
   })
 
-  const fileConfigToCache = {
+  const eslintInstance = new CLIEngine({
     ...rawFileConfig,
-    rules: fileRules
-  }
+    rules: fileRules,
+    useEslintrc: false,
+    fix: true,
+    globals: []
+  })
 
-  eslintConfigCache.set(stringifiedFileConfig, fileConfigToCache)
-  return fileConfigToCache
+  eslintConfigCache.set(stringifiedFileConfig, eslintInstance)
+  return eslintInstance
 }
 
 async function main() {
@@ -113,17 +116,9 @@ async function main() {
     console.log(`Processing: ${fileName}...`)
 
     const filePath = path.resolve(fileName)
-
-    const fileConfig = getFileConfig(filePath, cli.flags)
+    const fixingEslint = getEslintInstance(filePath, cli.flags)
 
     const fileInput = await fs.readFile(filePath, FILE_OPTIONS)
-
-    const fixingEslint = new CLIEngine({
-      ...fileConfig,
-      useEslintrc: false,
-      fix: true,
-      globals: []
-    })
 
     const prettierConfig = await prettier.resolveConfig(filePath)
     const formattedByPrettier = prettier.format(fileInput, {
