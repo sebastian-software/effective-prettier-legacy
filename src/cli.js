@@ -82,6 +82,8 @@ async function main() {
       }
     })
 
+    const fileInput = await fs.readFile(filePath, FILE_OPTIONS)
+
     // console.log('Config', fileConfig)
 
     const fixingEslint = new CLIEngine({
@@ -93,8 +95,13 @@ async function main() {
       rules: fileRules
     })
 
-    const fileInput = await fs.readFile(filePath, FILE_OPTIONS)
-    const report = fixingEslint.executeOnText(fileInput, filePath)
+    const prettierConfig = await prettier.resolveConfig(filePath)
+    const formattedByPrettier = prettier.format(fileInput, {
+      ...prettierConfig,
+      filepath: filePath
+    })
+
+    const report = fixingEslint.executeOnText(formattedByPrettier, filePath)
 
     if (report.usedDeprecatedRules) {
       report.usedDeprecatedRules.forEach((deprecationMessage) => {
