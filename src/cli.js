@@ -1,9 +1,12 @@
+import { promises as fs } from "fs"
 import path from "path"
 
 import meow from "meow"
 import { CLIEngine } from "eslint"
 import prettier from "prettier"
 import PQueue from "p-queue"
+
+const FILE_OPTIONS = { encoding: "utf-8" }
 
 async function main() {
   const cli = meow(
@@ -46,9 +49,11 @@ async function main() {
   const fileTasks = cli.input.map((fileName) => async () => {
     console.log(`Processing: ${fileName}...`)
 
-    const fileConfig = eslint.getConfigForFile(path.resolve(fileName))
+    const filePath = path.resolve(fileName)
+    const fileConfig = eslint.getConfigForFile(filePath)
 
     const localEslint = new CLIEngine({
+      useEslintrc: false,
       plugins: fileConfig.plugins
     })
     const rules = localEslint.getRules()
@@ -77,9 +82,49 @@ async function main() {
       }
     })
 
-    console.log("Config", fileConfig)
+    // console.log('Config', fileConfig)
 
+    const fixingEslint = new CLIEngine({
+      ...fileConfig,
+      useEslintrc: false,
+      // plugins: fileConfig.plugins,
+      fix: true,
+      globals: [],
+      rules: fileRules
+    })
 
+    const fileInput = await fs.readFile(filePath, FILE_OPTIONS)
+    const report = fixingEslint.executeOnText(fileInput, filePath)
+    console.log(report)
+
+    if (report.usedDeprecatedRules) {
+      report.usedDeprecatedRules.forEach((deprecationMessage) => {
+        console.warn(`Configuration uses deprecated rule: ${deprecationMessage.ruleId}!`)
+      })
+    }
+
+    const fileResult = report.results[0]
+    if (fileResult) {
+      if (fileResult.messages) {
+        fileResult.messages.forEach((messageEntry) => {
+          console.log(messageEntry)
+        })
+      }
+
+      const fileOutput = fileResult.output
+      if (!fileOutput) {
+        console.warn(`Issues during processing eslint for ${filePath}!`)
+        return
+      }
+
+      if (fileInput !== fileOutput) {
+        if (cli.flags.verbose) {
+          console.log(`Writing changes to: ${filePath}...`)
+        }
+
+        await fs.writeFile(filePath, fileOutput, FILE_OPTIONS)
+      }
+    }
   })
 
   const queue = new PQueue({ concurrency: cli.flags.concurrency })
