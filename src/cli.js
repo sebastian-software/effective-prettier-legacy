@@ -29,10 +29,11 @@ const eslintConfigCache = new Map()
 
 function getFileConfig(filePath, flags) {
   const rawFileConfig = cwdEsLint.getConfigForFile(filePath)
+  const stringifiedFileConfig = JSON.stringify(rawFileConfig)
 
-  const fileConfigCached = eslintConfigCache.get(rawFileConfig)
+  const fileConfigCached = eslintConfigCache.get(stringifiedFileConfig)
   if (fileConfigCached) {
-    console.log("Use config cache!")
+    // console.log("Use config cache!")
     return fileConfigCached
   }
 
@@ -71,7 +72,7 @@ function getFileConfig(filePath, flags) {
     rules: fileRules
   }
 
-  eslintConfigCache.set(rawFileConfig, fileConfigToCache)
+  eslintConfigCache.set(stringifiedFileConfig, fileConfigToCache)
   return fileConfigToCache
 }
 
