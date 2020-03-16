@@ -15,7 +15,7 @@ async function main() {
     --verbose, -v  Increase log level
 
   Examples
-    $ lean-prettier-eslint filename.js --verbose
+    $ prettier-eslint filename.js --verbose
 `,
     {
       flags: {
@@ -44,7 +44,7 @@ async function main() {
   const eslint = new CLIEngine(eslintOptions)
 
   const fileTasks = cli.input.map((fileName) => async () => {
-    console.log("Processing: ", fileName)
+    console.log(`Processing: ${fileName}...`)
 
     const fileConfig = eslint.getConfigForFile(path.resolve(fileName))
 
@@ -67,8 +67,7 @@ async function main() {
           fileRules[name] = "off"
         }
       } else {
-        console.log("Did not found:", name)
-        // process.exit(1)
+        console.log(`Did not found rule ${name}!`)
       }
     })
 
