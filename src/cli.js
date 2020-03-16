@@ -1,12 +1,79 @@
 import { promises as fs } from "fs"
 import path from "path"
 
+import globby from "globby"
 import meow from "meow"
 import { CLIEngine } from "eslint"
 import prettier from "prettier"
 import PQueue from "p-queue"
 
 const FILE_OPTIONS = { encoding: "utf-8" }
+
+const warnedOnRules = new Set()
+function warnRuleNotFound(ruleId) {
+  if (warnedOnRules.has(ruleId)) {
+    return
+  }
+
+  console.log(`Did not found rule ${ruleId}!`)
+  warnedOnRules.add(ruleId)
+}
+
+const eslintOptions = {
+  cwd: process.cwd(),
+  useEslintrc: true
+}
+const cwdEsLint = new CLIEngine(eslintOptions)
+
+const eslintConfigCache = new Map()
+
+function getFileConfig(filePath, flags) {
+  const rawFileConfig = cwdEsLint.getConfigForFile(filePath)
+
+  const fileConfigCached = eslintConfigCache.get(rawFileConfig)
+  if (fileConfigCached) {
+    console.log("Use config cache!")
+    return fileConfigCached
+  }
+
+  const localEslint = new CLIEngine({
+    useEslintrc: false,
+    plugins: rawFileConfig.plugins
+  })
+  const rules = localEslint.getRules()
+  const fileRules = rawFileConfig.rules
+
+  Object.entries(fileRules).forEach(([ name, rule ]) => {
+    const ruleImpl = rules.get(name)
+    if (ruleImpl) {
+      if (fileRules[name] === "off" || fileRules[name][0] === "off") {
+        delete fileRules[name]
+        return
+      }
+
+      // console.log(ruleImpl.meta)
+      if (ruleImpl.meta && ruleImpl.meta.fixable) {
+        if (flags.verbose) {
+          // console.log("- Auto fixing: " + name)
+        }
+      } else {
+        // Disable all non-fixable rules
+        // fileRules[name] = "off"
+        delete fileRules[name]
+      }
+    } else {
+      warnRuleNotFound(name)
+    }
+  })
+
+  const fileConfigToCache = {
+    ...rawFileConfig,
+    rules: fileRules
+  }
+
+  eslintConfigCache.set(rawFileConfig, fileConfigToCache)
+  return fileConfigToCache
+}
 
 async function main() {
   const cli = meow(
@@ -40,59 +107,21 @@ async function main() {
     console.log("Flags: ", cli.flags)
   }
 
-  const eslintOptions = {
-    cwd: process.cwd(),
-    useEslintrc: true
-  }
-  const eslint = new CLIEngine(eslintOptions)
-
-  const fileTasks = cli.input.map((fileName) => async () => {
+  const fileNames = await globby(cli.input, { gitignore: true })
+  const fileTasks = fileNames.map((fileName) => async () => {
     console.log(`Processing: ${fileName}...`)
 
     const filePath = path.resolve(fileName)
-    const fileConfig = eslint.getConfigForFile(filePath)
 
-    const localEslint = new CLIEngine({
-      useEslintrc: false,
-      plugins: fileConfig.plugins
-    })
-    const rules = localEslint.getRules()
-    const fileRules = fileConfig.rules
-
-    Object.entries(fileRules).forEach(([ name, rule ]) => {
-      const ruleImpl = rules.get(name)
-      if (ruleImpl) {
-        if (fileRules[name] === "off" || fileRules[name][0] === "off") {
-          delete fileRules[name]
-          return
-        }
-
-        // console.log(ruleImpl.meta)
-        if (ruleImpl.meta && ruleImpl.meta.fixable) {
-          if (cli.flags.verbose) {
-            // console.log("- Auto fixing: " + name)
-          }
-        } else {
-          // Disable all non-fixable rules
-          // fileRules[name] = "off"
-          delete fileRules[name]
-        }
-      } else {
-        console.log(`Did not found rule ${name}!`)
-      }
-    })
+    const fileConfig = getFileConfig(filePath, cli.flags)
 
     const fileInput = await fs.readFile(filePath, FILE_OPTIONS)
-
-    // console.log('Config', fileConfig)
 
     const fixingEslint = new CLIEngine({
       ...fileConfig,
       useEslintrc: false,
-      // plugins: fileConfig.plugins,
       fix: true,
-      globals: [],
-      rules: fileRules
+      globals: []
     })
 
     const prettierConfig = await prettier.resolveConfig(filePath)
@@ -134,9 +163,11 @@ async function main() {
   })
 
   const queue = new PQueue({ concurrency: cli.flags.concurrency })
-  queue.on("active", () => {
-    console.log(`Queue Size: ${queue.size} / Pending: ${queue.pending}`)
-  })
+  if (cli.flags.verbose) {
+    queue.on("active", () => {
+      console.log(`Queue Size: ${queue.size}`)
+    })
+  }
 
   await queue.addAll(fileTasks)
 }
