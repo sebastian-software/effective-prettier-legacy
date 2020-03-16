@@ -95,7 +95,6 @@ async function main() {
 
     const fileInput = await fs.readFile(filePath, FILE_OPTIONS)
     const report = fixingEslint.executeOnText(fileInput, filePath)
-    console.log(report)
 
     if (report.usedDeprecatedRules) {
       report.usedDeprecatedRules.forEach((deprecationMessage) => {
@@ -113,7 +112,7 @@ async function main() {
 
       const fileOutput = fileResult.output
       if (!fileOutput) {
-        console.warn(`Issues during processing eslint for ${filePath}!`)
+        // Nothing was changed!
         return
       }
 
