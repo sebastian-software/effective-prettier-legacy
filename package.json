@@ -1,58 +1,38 @@
 {
   "name": "@effective/prettier-eslint",
-  "version": "1.0.0",
-  "main": "dist/index.cjs.js",
-  "module": "dist/index.esm.js",
-  "scripts": {
-    "lint": "eslint '**/*.js'",
-    "fix": "eslint --fix '**/*.js'",
-    "format": "prettier --write '**/*.{js,jsx,ts,tsx,json,md}' && npm run fix",
-    "release": "git push && release-it --github.release --npm.publish --non-interactive",
-    "release:minor": "git push && release-it --github.release --npm.publish --non-interactive --increment minor",
-    "release:major": "git push && release-it --github.release --npm.publish --non-interactive --increment major",
-    "prepare": "preppy",
-    "watch": "preppy --watch",
-    "test": "jest"
-  },
+  "description": "A leaner and more up-to-date alternative to prettier-eslint.",
+  "license": "Apache-2.0",
+  "author": "Sebastian Werner <s.werner@sebastian-software.de> (http://sebastian-software.de/werner)",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sebastian-software/lean-prettier-eslint.git"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "keywords": [
-    "prettier",
-    "eslint"
-  ],
+  "version": "1.0.0",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
   "bin": {
     "prettier-eslint": "bin/prettier-eslint"
-  },
-  "lint-staged": {
-    "**/package.json": [
-      "prettier-package-json --write"
-    ],
-    "**/*.{json,md,yml,yaml}": [
-      "prettier --write"
-    ],
-    "**/*.js": [
-      "prettier --write",
-      "eslint --fix"
-    ]
   },
   "files": [
     "bin/",
     "dist/"
   ],
-  "author": {
-    "name": "Sebastian Werner",
-    "email": "s.werner@sebastian-software.de",
-    "url": "http://sebastian-software.de/werner"
+  "scripts": {
+    "fix": "eslint --fix '**/*.js'",
+    "format": "prettier --write '**/*.{js,jsx,ts,tsx,json,md}' && npm run fix",
+    "lint": "eslint '**/*.js'",
+    "prepare": "preppy",
+    "release": "git push && release-it --github.release --npm.publish --non-interactive",
+    "release:major": "git push && release-it --github.release --npm.publish --non-interactive --increment major",
+    "release:minor": "git push && release-it --github.release --npm.publish --non-interactive --increment minor",
+    "test": "jest",
+    "watch": "preppy --watch"
   },
-  "license": "Apache-2.0",
-  "description": "A leaner and more up-to-date alternative to prettier-eslint.",
+  "dependencies": {
+    "eslint": "^6.8.0",
+    "p-queue": "^6.3.0",
+    "prettier": "^1.19.1"
+  },
   "devDependencies": {
     "@babel/core": "^7.8.7",
     "@babel/plugin-proposal-object-rest-spread": "^7.8.3",
@@ -68,9 +48,25 @@
     "prettier-package-json": "^2.1.3",
     "typescript": "^3.8.3"
   },
-  "dependencies": {
-    "eslint": "^6.8.0",
-    "prettier": "^1.19.1",
-    "p-queue": "^6.3.0"
+  "keywords": [
+    "eslint",
+    "prettier"
+  ],
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "package.json": [
+      "prettier-package-json --write"
+    ],
+    "**/*.{json,md,yml,yaml}": [
+      "prettier --write"
+    ],
+    "**/*.js": [
+      "prettier --write",
+      "eslint --fix"
+    ]
   }
 }
