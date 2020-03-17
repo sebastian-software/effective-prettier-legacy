@@ -1,0 +1,15 @@
+language: node_js
+node_js:
+  - 10
+  - 12
+matrix:
+  fast_finish: true
+cache:
+  directories:
+    - "$HOME/.npm"
+script:
+  - npm test
+notifications:
+  email: false
+  slack:
+    secure: rCeqDGxpL8h35ZviPcOg9Ld23aPxg4ZjIShTxjbUyBDWNt/886m/7V8fSrZANE3NprzYE1krc08IqR8JhVroFe3ZBLx562/LjqemYk+EGPga/J45JNsyoRyu+RrchKb/7d8gLfDiF5gK1SSp8GDaMO85lPNIz9+ptYedp30bex1nJ//YQRpNhIkEI5pIZWrHLmxP0IHOOCH+MiXI+NjNVhum7lRrV2d2lGugEj1YbywtECUJ5KyCriO2qHdtGl/TxgtfPlPLKVlN69pHzr25WqlIfXjgNbpVDCHJhCPe14WBItjEacN26FL8QWKg+KTEy5ICquBSZryRVTHnnID4mbMp0CbkoWJrOhgDWCG+13043GV3ASh76M88x7QgW0URksHQUIK/15NPI1P+CR/c8YCdqncvlKbEv/Pwn9phGFsuE3mqr3BOJDqvrM+92WtEhyj0UtX3e05/2lam6rpZ6zqW3U52pa5Xl2SwvU39G5hYbiruPwFjRXXz2bciImB0HPlxZ+kbBArmqkJAzx/UKgqJ2m/nOJWHKhxT9GgGsgAKCLWosHYEVAfVAgzn3hxaX02M+Kip4QgO5Avhvu7txR1YgQm7rVzdMwWZRds0UEw1eGkUU1m5OUvVGir9ecTOaJogQq6bXj1qz00CwpWcrKggBSvhB/2pMwMnz5AAOpU=
