@@ -1,4 +1,5 @@
 import { promises as fs } from "fs"
+import { PerformanceObserver, performance } from "perf_hooks"
 
 import prettier from "prettier"
 
@@ -6,18 +7,11 @@ import { getEslintInstance } from "./eslint"
 
 const FILE_OPTIONS = { encoding: "utf-8" }
 
-export async function formatFile(filePath, options) {
-  const fileInput = await fs.readFile(filePath, FILE_OPTIONS)
-  const fileOutput = await formatText(fileInput, { filePath })
-
-  if (fileInput !== fileOutput) {
-    if (options.verbose) {
-      console.log(`Writing changes to: ${filePath}...`)
-    }
-
-    await fs.writeFile(filePath, fileOutput, FILE_OPTIONS)
-  }
-}
+const performanceLogger = new PerformanceObserver((list) => {
+  const entry = list.getEntries()[0]
+  console.log(`${entry.name}(): ${entry.duration.toFixed(0)}ms`)
+})
+performanceLogger.observe({ entryTypes: [ "function" ] })
 
 export async function formatText(fileInput, options) {
   const { filePath } = options
@@ -49,6 +43,21 @@ export async function formatText(fileInput, options) {
   }
 
   return fileInput
+}
+
+export const formatTextMeasured = performance.timerify(formatText)
+
+export async function formatFile(filePath, options) {
+  const fileInput = await fs.readFile(filePath, FILE_OPTIONS)
+  const fileOutput = await formatTextMeasured(fileInput, { filePath })
+
+  if (fileInput !== fileOutput) {
+    if (options.verbose) {
+      console.log(`Writing changes to: ${filePath}...`)
+    }
+
+    await fs.writeFile(filePath, fileOutput, FILE_OPTIONS)
+  }
 }
 
 // Compatible to prettier-eslint: https://github.com/prettier/prettier-eslint
