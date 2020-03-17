@@ -2,13 +2,13 @@
 
 [sponsor]: https://www.sebastian-software.de
 [deps]: https://david-dm.org/sebastian-software/effective-prettier-eslint
-[npm]: https://www.npmjs.com/package/@effective/eslint-config
+[npm]: https://www.npmjs.com/package/@effective/prettier-eslint
 [travis]: https://travis-ci.org/sebastian-software/effective-prettier-eslint
 [appveyor]: https://ci.appveyor.com/project/swernerx/effective-prettier-eslint/branch/master
 [sponsor-img]: https://badgen.net/badge/Sponsored%20by/Sebastian%20Software/692446
 [deps-img]: https://badgen.net/david/dep/sebastian-software/effective-prettier-eslint
-[npm-downloads-img]: https://badgen.net/npm/dm/@effective/eslint-config
-[npm-version-img]: https://badgen.net/npm/v/@effective/eslint-config
+[npm-downloads-img]: https://badgen.net/npm/dm/@effective/prettier-eslint
+[npm-version-img]: https://badgen.net/npm/v/@effective/prettier-eslint
 [travis-img]: https://badgen.net/travis/sebastian-software/effective-prettier-eslint?label=unix%20build
 [appveyor-img]: https://badgen.net/appveyor/ci/swernerx/effective-prettier-eslint?label=windows%20build
 
