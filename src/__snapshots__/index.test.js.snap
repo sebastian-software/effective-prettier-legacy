@@ -6,3 +6,8 @@ exports[`Auto formatting Autofix 1 1`] = `
 }
 "
 `;
+
+exports[`Auto formatting Autofix 2 1`] = `
+"const msgs = [ \\"hello\\", \\"world\\", \\"from\\", \\"our\\", \\"test\\" ]
+"
+`;

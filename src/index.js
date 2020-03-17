@@ -23,7 +23,8 @@ export async function formatText(fileInput, options) {
     filepath: filePath
   })
 
-  const report = fixingEslint.executeOnText(formattedByPrettier, filePath)
+  console.log(formattedByPrettier)
+  const report = fixingEslint.executeOnText(` ${formattedByPrettier}`, filePath)
 
   if (report.usedDeprecatedRules) {
     report.usedDeprecatedRules.forEach((deprecationMessage) => {
@@ -40,10 +41,14 @@ export async function formatText(fileInput, options) {
     }
 
     if (fileResult.output) {
+      console.log("Return prettier+eslint result")
       return fileResult.output
     }
+  } else {
+    console.log("No Eslint result!", report)
   }
 
+  console.log("Return prettier result")
   return formattedByPrettier
 }
 
