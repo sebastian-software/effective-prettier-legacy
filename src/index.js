@@ -49,7 +49,7 @@ export const formatTextMeasured = performance.timerify(formatText)
 
 export async function formatFile(filePath, options) {
   const fileInput = await fs.readFile(filePath, FILE_OPTIONS)
-  const fileOutput = await formatTextMeasured(fileInput, { filePath })
+  const fileOutput = await formatText(fileInput, { filePath })
 
   if (fileInput !== fileOutput) {
     if (options.verbose) {

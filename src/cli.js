@@ -54,7 +54,7 @@ async function main() {
 
         concurrency: {
           type: "number",
-          default: 10
+          default: 4
         }
       }
     }
