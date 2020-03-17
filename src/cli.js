@@ -2,6 +2,8 @@ import { promises as fs } from "fs"
 import path from "path"
 
 import globby from "globby"
+import globParent from "glob-parent"
+import isPathInside from "is-path-inside"
 import meow from "meow"
 import { CLIEngine } from "eslint"
 import prettier from "prettier"
@@ -19,8 +21,9 @@ function warnRuleNotFound(ruleId) {
   warnedOnRules.add(ruleId)
 }
 
+const CWD = process.cwd()
 const eslintOptions = {
-  cwd: process.cwd(),
+  cwd: CWD,
   useEslintrc: true
 }
 const cwdEsLint = new CLIEngine(eslintOptions)
@@ -109,6 +112,18 @@ async function main() {
   if (cli.flags.verbose) {
     console.log("Files: ", cli.input)
     console.log("Flags: ", cli.flags)
+  }
+
+  let hasExprError = false
+  cli.input.forEach((expr) => {
+    const exprParent = globParent(expr)
+    if (!isPathInside(exprParent, CWD)) {
+      console.error(`Input is outside of working directory: ${expr}!`)
+      hasExprError = true
+    }
+  })
+  if (hasExprError) {
+    process.exit(1)
   }
 
   const fileNames = await globby(cli.input, { gitignore: true })
