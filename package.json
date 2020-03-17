@@ -25,7 +25,7 @@
     "release": "git push && release-it --github.release --npm.publish --non-interactive",
     "release:major": "git push && release-it --github.release --npm.publish --non-interactive --increment major",
     "release:minor": "git push && release-it --github.release --npm.publish --non-interactive --increment minor",
-    "test": "jest",
+    "test": "jest --silent",
     "watch": "preppy --watch"
   },
   "dependencies": {

@@ -44,11 +44,14 @@ export async function formatText(fileInput, options) {
       console.log("Return prettier+eslint result")
       return fileResult.output
     }
-  } else {
-    console.log("No Eslint result!", report)
+  } else if (options.verbose) {
+    console.log("File is ignored by eslint!")
   }
 
-  console.log("Return prettier result")
+  if (options.verbose) {
+    console.log("Return prettier result")
+  }
+
   return formattedByPrettier
 }
 
