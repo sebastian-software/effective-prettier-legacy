@@ -13,7 +13,7 @@ import { getEslintInstance } from "./eslint"
 const FILE_OPTIONS = { encoding: "utf-8" }
 const CWD = process.cwd()
 
-function verifyPaths(paths) {
+function verifyInput(paths) {
   let hasExprError = false
   paths.forEach((expr) => {
     const exprParent = globParent(expr)
@@ -107,7 +107,7 @@ async function main() {
     console.log("Flags: ", cli.flags)
   }
 
-  verifyPaths(cli.input)
+  verifyInput(cli.input)
 
   const fileNames = await globby(cli.input, { gitignore: true })
   const fileTasks = fileNames.map((fileName) => processFileFactory(fileName, cli))
