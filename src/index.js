@@ -39,10 +39,12 @@ export async function formatText(fileInput, options) {
       })
     }
 
-    return fileResult.output || fileInput
+    if (fileResult.output) {
+      return fileResult.output
+    }
   }
 
-  return fileInput
+  return formattedByPrettier
 }
 
 export const formatTextMeasured = performance.timerify(formatText)

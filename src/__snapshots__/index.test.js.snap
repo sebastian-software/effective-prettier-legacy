@@ -1,0 +1,8 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Auto formatting Autofix 1 1`] = `
+"function hello() {
+  return \\"powerful\\"
+}
+"
+`;
