@@ -23,7 +23,6 @@ export async function formatText(fileInput, options) {
     filepath: filePath
   })
 
-  console.log(formattedByPrettier)
   const report = fixingEslint.executeOnText(` ${formattedByPrettier}`, filePath)
 
   if (report.usedDeprecatedRules) {
