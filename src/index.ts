@@ -11,7 +11,7 @@ const performanceLogger = new PerformanceObserver((list) => {
   const entry = list.getEntries()[0]
   console.log(`${entry.name}(): ${entry.duration.toFixed(0)}ms`)
 })
-performanceLogger.observe({ entryTypes: ["function"] })
+performanceLogger.observe({ entryTypes: [ "function" ] })
 
 interface FormatOptions {
   filePath?: string
@@ -26,12 +26,12 @@ export async function formatText(fileInput: string, options: FormatOptions = {})
     ignorePath
   })
 
-  const formattedByPrettier = prettierInfo.ignored
-    ? fileInput
-    : prettier.format(fileInput, {
-        ...(await prettier.resolveConfig(filePath)),
-        filepath: filePath
-      })
+  const formattedByPrettier = prettierInfo.ignored ?
+    fileInput :
+    prettier.format(fileInput, {
+      ...await prettier.resolveConfig(filePath),
+      filepath: filePath
+    })
 
   const report = fixingEslint.executeOnText(` ${formattedByPrettier}`, filePath)
 
