@@ -68,9 +68,3 @@ export async function formatFile(filePath, options) {
     await fs.writeFile(filePath, fileOutput, FILE_OPTIONS)
   }
 }
-
-// Compatible to prettier-eslint: https://github.com/prettier/prettier-eslint
-export default function index(options) {
-  const { text, ...cleanOptions } = options
-  return formatText(text, cleanOptions)
-}
