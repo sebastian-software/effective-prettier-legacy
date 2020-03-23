@@ -1,4 +1,18 @@
+import { dirname } from "path"
+
 import { CLIEngine } from "eslint"
+
+import { debug } from "./log"
+
+// ESLint loads its plugins from the given or current CWD.
+// Unfortunately in some situations the CWD e.g. when running inside
+// Visual Studio Code is '/'. On this folder it does not find any plugins
+// as all. This uses the location of Eslint which should be stable
+// in one project to load all of its dependencies.
+// Via: https://stackoverflow.com/a/49455609
+
+const ESLINT_ROOT = dirname(require.resolve("eslint/package.json"))
+debug("ESLint-Root:", ESLINT_ROOT)
 
 const warnedOnRules = new Set()
 function warnRuleNotFound(ruleId) {
@@ -6,14 +20,14 @@ function warnRuleNotFound(ruleId) {
     return
   }
 
-  console.log(`Did not found rule ${ruleId}!`)
+  debug(`Did not found rule ${ruleId}!`)
   warnedOnRules.add(ruleId)
 }
 
 const eslintInstanceCache = new Map()
 
 const cwdEsLint = new CLIEngine({
-  cwd: process.cwd(),
+  cwd: ESLINT_ROOT,
   useEslintrc: true
 })
 
@@ -28,6 +42,7 @@ export function getEslintInstance(filePath, flags) {
   }
 
   const localEslint = new CLIEngine({
+    cwd: ESLINT_ROOT,
     useEslintrc: false,
     plugins: rawFileConfig.plugins
   })
@@ -45,7 +60,7 @@ export function getEslintInstance(filePath, flags) {
       // console.log(ruleImpl.meta)
       if (ruleImpl.meta && ruleImpl.meta.fixable) {
         if (flags.verbose) {
-          // console.log("- Auto fixing: " + name)
+          debug(`- Auto fixing: ${name}`)
         }
       } else {
         // Disable all non-fixable rules
@@ -57,8 +72,13 @@ export function getEslintInstance(filePath, flags) {
     }
   })
 
+  if (rules.verbose) {
+    debug("Enabled rules:", fileRules)
+  }
+
   const eslintInstance = new CLIEngine({
     ...rawFileConfig,
+    cwd: ESLINT_ROOT,
     rules: fileRules,
     useEslintrc: false,
     fix: true,
