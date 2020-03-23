@@ -11,21 +11,27 @@ const performanceLogger = new PerformanceObserver((list) => {
   const entry = list.getEntries()[0]
   console.log(`${entry.name}(): ${entry.duration.toFixed(0)}ms`)
 })
-performanceLogger.observe({ entryTypes: [ "function" ] })
+performanceLogger.observe({ entryTypes: ["function"] })
 
-export async function formatText(fileInput, options) {
-  const { filePath } = options
+interface FormatOptions {
+  filePath?: string
+  ignorePath?: string
+}
+
+export async function formatText(fileInput: string, options: FormatOptions = {}) {
+  const { filePath, ignorePath = ".prettierignore" } = options
   const fixingEslint = getEslintInstance(filePath, options)
 
-  const prettierInfo = await prettier.getFileInfo(filePath)
-  console.log(filePath, prettierInfo)
-
-
-  const prettierConfig = await prettier.resolveConfig(filePath)
-  const formattedByPrettier = prettier.format(fileInput, {
-    ...prettierConfig,
-    filepath: filePath
+  const prettierInfo = await prettier.getFileInfo(filePath, {
+    ignorePath
   })
+
+  const formattedByPrettier = prettierInfo.ignored
+    ? fileInput
+    : prettier.format(fileInput, {
+        ...(await prettier.resolveConfig(filePath)),
+        filepath: filePath
+      })
 
   const report = fixingEslint.executeOnText(` ${formattedByPrettier}`, filePath)
 
@@ -62,7 +68,7 @@ export const formatTextMeasured = performance.timerify(formatText)
 
 export async function formatFile(filePath, options) {
   const fileInput = await fs.readFile(filePath, FILE_OPTIONS)
-  const fileOutput = await formatText(fileInput, { filePath })
+  const fileOutput = await formatText(fileInput, { filePath, ignorePath })
 
   if (fileInput !== fileOutput) {
     if (options.verbose) {
