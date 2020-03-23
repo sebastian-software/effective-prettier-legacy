@@ -17,6 +17,10 @@ export async function formatText(fileInput, options) {
   const { filePath } = options
   const fixingEslint = getEslintInstance(filePath, options)
 
+  const prettierInfo = await prettier.getFileInfo(filePath)
+  console.log(filePath, prettierInfo)
+
+
   const prettierConfig = await prettier.resolveConfig(filePath)
   const formattedByPrettier = prettier.format(fileInput, {
     ...prettierConfig,

@@ -1,14 +1,17 @@
-let vscode
+// eslint-disable-next-line import/no-unresolved
+import type { OutputChannel } from "vscode"
+
+let channel
 try {
-  // eslint-disable-next-line global-require
-  vscode = require("vscode")
+  // eslint-disable-next-line global-require, @typescript-eslint/no-var-requires
+  const vscode = require("vscode")
+  channel = vscode.createOutputChannel("Prettier ESLint") as OutputChannel
 } catch (importError) {
   // pass
 }
 
 let impl
-if (vscode && vscode.window && vscode.window.createOutputChannel) {
-  const channel = window.createOutputChannel("Prettier ESLint")
+if (channel) {
   impl = (...messages) => {
     channel.appendLine(messages.join("\n"))
   }
