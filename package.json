@@ -18,7 +18,7 @@
     "dist/"
   ],
   "scripts": {
-    "format": "npm run prepare && ./bin/prettier-eslit '**/*.{js,ts}",
+    "format": "npm run prepare && ./bin/prettier-eslint './**/*.{js,ts}'",
     "lint": "tsc --noEmit && eslint '**/*.ts'",
     "prepare": "preppy",
     "release": "git push && release-it --github.release --npm.publish --non-interactive",

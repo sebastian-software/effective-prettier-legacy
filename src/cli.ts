@@ -13,8 +13,8 @@ const CWD = process.cwd()
 function verifyInput(paths) {
   let hasExprError = false
   paths.forEach((expr) => {
-    const exprParent = globParent(expr)
-    if (!isPathInside(exprParent, CWD)) {
+    const exprParent = path.resolve(globParent(expr))
+    if (exprParent !== CWD && !isPathInside(exprParent, CWD)) {
       console.error(`Input is outside of working directory: ${expr}!`)
       hasExprError = true
     }
