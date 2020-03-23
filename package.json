@@ -18,9 +18,8 @@
     "dist/"
   ],
   "scripts": {
-    "fix": "eslint --fix '**/*.js'",
-    "format": "prettier --write '**/*.{js,jsx,ts,tsx,json,md}' && npm run fix",
-    "lint": "eslint '**/*.js'",
+    "format": "npm run prepare && ./bin/prettier-eslit '**/*.{js,ts}",
+    "lint": "tsc --noEmit && eslint '**/*.ts'",
     "prepare": "preppy",
     "release": "git push && release-it --github.release --npm.publish --non-interactive",
     "release:major": "git push && release-it --github.release --npm.publish --non-interactive --increment major",
