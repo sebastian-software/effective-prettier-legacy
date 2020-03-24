@@ -16,10 +16,11 @@ performanceLogger.observe({ entryTypes: [ "function" ] })
 interface FormatOptions {
   filePath?: string
   ignorePath?: string
+  verbose?: boolean
 }
 
 export async function formatText(fileInput: string, options: FormatOptions = {}) {
-  const { filePath, ignorePath = ".prettierignore" } = options
+  const { filePath, ignorePath = ".prettierignore", verbose = false } = options
   const fixingEslint = getEslintInstance(filePath, options)
 
   const prettierInfo = await prettier.getFileInfo(filePath, {
@@ -53,11 +54,11 @@ export async function formatText(fileInput: string, options: FormatOptions = {})
       console.log("Return prettier+eslint result")
       return fileResult.output
     }
-  } else if (options.verbose) {
+  } else if (verbose) {
     console.log("File is ignored by eslint!")
   }
 
-  if (options.verbose) {
+  if (verbose) {
     console.log("Return prettier result")
   }
 
@@ -66,9 +67,9 @@ export async function formatText(fileInput: string, options: FormatOptions = {})
 
 export const formatTextMeasured = performance.timerify(formatText)
 
-export async function formatFile(filePath, options) {
-  const fileInput = await fs.readFile(filePath, FILE_OPTIONS)
-  const fileOutput = await formatText(fileInput, { filePath, ignorePath })
+export async function formatFile(filePath: string, options) {
+  const fileInput = await fs.readFile(filePath, FILE_OPTIONS) as string
+  const fileOutput = await formatText(fileInput, { filePath, ...options })
 
   if (fileInput !== fileOutput) {
     if (options.verbose) {
