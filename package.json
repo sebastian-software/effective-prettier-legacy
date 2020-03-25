@@ -33,7 +33,7 @@
     "globby": "^11.0.0",
     "is-path-inside": "^3.0.2",
     "p-queue": "^6.3.0",
-    "prettier": "^2.0.1"
+    "prettier": "^2.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",
@@ -41,11 +41,11 @@
     "@babel/plugin-transform-runtime": "^7.9.0",
     "@babel/preset-env": "^7.9.0",
     "@babel/preset-typescript": "^7.9.0",
-    "@effective/eslint-config": "^1.4.0",
+    "@effective/eslint-config": "^2.1.0",
     "@types/jest": "^25.1.4",
     "husky": "^4.2.3",
-    "jest": "^25.1.0",
-    "lint-staged": "^10.0.8",
+    "jest": "^25.2.0",
+    "lint-staged": "^10.0.9",
     "meow": "^6.1.0",
     "preppy": "^9.3.1",
     "prettier-package-json": "^2.1.3",
