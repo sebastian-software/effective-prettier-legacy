@@ -28,6 +28,7 @@
     "watch": "preppy --watch"
   },
   "dependencies": {
+    "app-root-path": "^3.0.0",
     "eslint": "^6.8.0",
     "glob-parent": "^5.1.1",
     "globby": "^11.0.0",

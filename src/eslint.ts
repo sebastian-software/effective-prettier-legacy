@@ -1,16 +1,7 @@
-import appRootPath from "app-root-path"
-import { spawnSync } from "child_process"
-
 import { CLIEngine } from "eslint"
 
 import { debug } from "./log"
-
-// const ESLINT_PKG = require.resolve("eslint/package.json")
-
-function getRoot() {
-  const gitResult = spawnSync("git", ["rev-parse", "--show-toplevel"], { encoding: "utf-8" })
-  return gitResult && !gitResult.error ? gitResult.stdout : appRootPath.toString()
-}
+import { ESLINT_ROOT_PATH, APP_ROOT_PATH } from "./util"
 
 // ESLint loads its plugins from the given or current CWD.
 // Unfortunately in some situations the CWD e.g. when running inside
@@ -18,8 +9,6 @@ function getRoot() {
 // as all. This uses the location of Eslint which should be stable
 // in one project to load all of its dependencies.
 // Via: https://stackoverflow.com/a/49455609
-
-const ROOT_PATH = getRoot()
 
 const warnedOnRules = new Set()
 function warnRuleNotFound(ruleId) {
@@ -34,7 +23,7 @@ function warnRuleNotFound(ruleId) {
 const eslintInstanceCache = new Map()
 
 const cwdEsLint = new CLIEngine({
-  cwd: ROOT_PATH,
+  cwd: ESLINT_ROOT_PATH,
   useEslintrc: true
 })
 
@@ -52,7 +41,7 @@ export function getEslintInstance(filePath, flags) {
   // require("debug").enable("eslint:*,-eslint:code-path");
 
   const localEslint = new CLIEngine({
-    cwd: ROOT_PATH,
+    cwd: ESLINT_ROOT_PATH,
     useEslintrc: false,
     plugins: rawFileConfig.plugins
   })
@@ -88,7 +77,7 @@ export function getEslintInstance(filePath, flags) {
 
   const eslintInstance = new CLIEngine({
     ...rawFileConfig,
-    cwd: ROOT_PATH,
+    cwd: APP_ROOT_PATH,
     rules: fileRules,
     useEslintrc: false,
     fix: true,

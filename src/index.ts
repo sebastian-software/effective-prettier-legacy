@@ -14,26 +14,31 @@ const performanceLogger = new PerformanceObserver((list) => {
 performanceLogger.observe({ entryTypes: [ "function" ] })
 
 interface FormatOptions {
-  ignorePath?: string
   verbose?: boolean
 }
 
-export async function formatText(fileInput: string, filePath: string, options: FormatOptions) {
-  const { ignorePath = ".prettierignore", verbose = false } = options
-  const fixingEslint = getEslintInstance(filePath, options)
+async function executePrettier(fileInput: string, filePath: string, options: FormatOptions) {
+  const prettierInfo = await prettier.getFileInfo(filePath)
 
-  const prettierInfo = await prettier.getFileInfo(filePath, {
-    ignorePath
+  if (prettierInfo.ignored) {
+    return null
+  }
+
+  const fileOutput = prettier.format(fileInput, {
+    ...await prettier.resolveConfig(filePath),
+    filepath: filePath
   })
 
-  const formattedByPrettier = prettierInfo.ignored ?
-    fileInput :
-    prettier.format(fileInput, {
-      ...await prettier.resolveConfig(filePath),
-      filepath: filePath
-    })
+  if (fileOutput === fileInput) {
+    return false
+  }
 
-  const report = fixingEslint.executeOnText(formattedByPrettier, filePath)
+  return fileOutput
+}
+
+async function executeEslint(fileInput, filePath, options: FormatOptions) {
+  const fixingEslint = getEslintInstance(filePath, options)
+  const report = fixingEslint.executeOnText(fileInput, filePath)
 
   if (report.usedDeprecatedRules) {
     report.usedDeprecatedRules.forEach((deprecationMessage) => {
@@ -42,26 +47,50 @@ export async function formatText(fileInput: string, filePath: string, options: F
   }
 
   const fileResult = report.results[0]
-  if (fileResult) {
-    if (fileResult.messages) {
-      fileResult.messages.forEach((messageEntry) => {
-        console.log(messageEntry)
-      })
-    }
-
-    if (fileResult.output) {
-      console.log("Return prettier+eslint result")
-      return fileResult.output
-    }
-  } else if (verbose) {
-    console.log("File is ignored by eslint!")
+  if (!fileResult) {
+    return null
   }
 
-  if (verbose) {
-    console.log("Return prettier result")
+  if (fileResult.messages) {
+    fileResult.messages.forEach((messageEntry) => {
+      console.log(messageEntry)
+    })
   }
 
-  return formattedByPrettier
+  return fileResult.output ? fileResult.output : false
+}
+
+export async function formatText(fileInput: string, filePath: string, options: FormatOptions) {
+  const executedTools: string[] = []
+  const changingTools: string[] = []
+
+  let fileOutput = fileInput
+
+  const prettierResult = await executePrettier(fileOutput, filePath, options)
+  if (prettierResult != null) {
+    executedTools.push("prettier")
+    if (prettierResult) {
+      changingTools.push("prettier")
+      fileOutput = prettierResult
+    }
+  }
+
+  const eslintResult = await executeEslint(fileOutput, filePath, options)
+  if (eslintResult != null) {
+    executedTools.push("eslint")
+    if (eslintResult) {
+      changingTools.push("eslint")
+      fileOutput = eslintResult
+    }
+  }
+
+  if (options.verbose) {
+    console.log(`${filePath}: Executed: ${executedTools.join(", ")}`)
+    console.log(`${filePath}: Applied: ${changingTools.join(", ")}`)
+    console.log("")
+  }
+
+  return fileOutput
 }
 
 export const formatTextMeasured = performance.timerify(formatText)
