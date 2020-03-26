@@ -37,7 +37,6 @@ export function getEslintInstance(filePath: string, flags: FormatOptions = {}) {
 
   const cachedEslintInstance = eslintInstanceCache.get(stringifiedFileConfig)
   if (cachedEslintInstance) {
-    // console.log("Use config cache!")
     return cachedEslintInstance
   }
 

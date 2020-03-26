@@ -7,13 +7,14 @@ import prettier from "prettier"
 import { getEslintInstance } from "./eslint"
 import { APP_ROOT_PATH } from "./util"
 import { FormatOptions } from "./types"
+import { debug } from "./log"
 
 const FILE_OPTIONS = { encoding: "utf-8" }
 const PRETTIER_IGNORE_FILENAME = ".prettierignore"
 
 const performanceLogger = new PerformanceObserver((list) => {
   const entry = list.getEntries()[0]
-  console.log(`${entry.name}(): ${entry.duration.toFixed(0)}ms`)
+  debug(`${entry.name}(): ${entry.duration.toFixed(0)}ms`)
 })
 performanceLogger.observe({ entryTypes: [ "function" ] })
 
@@ -53,7 +54,7 @@ async function executeEslint(fileInput, filePath, options: FormatOptions) {
 
   if (report.usedDeprecatedRules) {
     report.usedDeprecatedRules.forEach((deprecationMessage) => {
-      console.warn(`Configuration uses deprecated rule: ${deprecationMessage.ruleId}!`)
+      debug(`Configuration uses deprecated rule: ${deprecationMessage.ruleId}!`)
     })
   }
 
@@ -64,7 +65,7 @@ async function executeEslint(fileInput, filePath, options: FormatOptions) {
 
   if (fileResult.messages) {
     fileResult.messages.forEach((messageEntry) => {
-      console.log(messageEntry)
+      debug(messageEntry)
     })
   }
 
@@ -97,14 +98,14 @@ export async function formatText(fileInput: string, filePath: string, options: F
 
   if (options.verbose) {
     if (executedTools.length === 0) {
-      console.log(`${filePath} was ignored!`)
+      debug(`${filePath} was ignored!`)
     } else if (changingTools.length === 0) {
-      console.log(`${filePath} was not modified!`)
+      debug(`${filePath} was not modified!`)
     }
 
-    console.log(`${filePath}: Executed: ${executedTools.join(", ")}`)
-    console.log(`${filePath}: Applied: ${changingTools.join(", ")}`)
-    console.log("")
+    debug(`${filePath}: Executed: ${executedTools.join(", ")}`)
+    debug(`${filePath}: Applied: ${changingTools.join(", ")}`)
+    debug("")
   }
 
   return fileOutput
@@ -118,7 +119,7 @@ export async function formatFile(filePath: string, options) {
 
   if (fileInput !== fileOutput) {
     if (options.verbose) {
-      console.log(`Writing changes to: ${filePath}...`)
+      debug(`Writing changes to: ${filePath}...`)
     }
 
     await fs.writeFile(filePath, fileOutput, FILE_OPTIONS)
