@@ -40,6 +40,12 @@ export function getEslintInstance(filePath: string, flags: FormatOptions = {}) {
     return cachedEslintInstance
   }
 
+  if (flags.debug) {
+    debug(`FLAGS: ${JSON.stringify(flags)}`)
+    debug(`ESLINT_ROOT_PATH: ${ESLINT_ROOT_PATH}`)
+    debug(`APP_ROOT_PATH: ${APP_ROOT_PATH}`)
+  }
+
   // This can be used to enable debug mode in eslint
   // require("debug").enable("eslint:*,-eslint:code-path");
 
