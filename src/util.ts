@@ -5,7 +5,7 @@ import appRootPath from "app-root-path"
 
 export const ESLINT_ROOT_PATH = (() => {
   const eslintPackageFile = require.resolve("eslint/package.json")
-  return eslintPackageFile ? dirname(eslintPackageFile) : null
+  return eslintPackageFile ? dirname(eslintPackageFile).split("node_modules")[0] : null
 })()
 
 export const APP_ROOT_PATH = (() => {
