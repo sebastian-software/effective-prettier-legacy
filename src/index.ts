@@ -88,6 +88,12 @@ export async function formatText(fileInput: string, filePath: string, options: F
   }
 
   if (options.verbose) {
+    if (executedTools.length) {
+      console.log(`${filePath} was ignored!`)
+    } else if (changingTools.length) {
+      console.log(`${filePath} was not modified!`)
+    }
+
     console.log(`${filePath}: Executed: ${executedTools.join(", ")}`)
     console.log(`${filePath}: Applied: ${changingTools.join(", ")}`)
     console.log("")
