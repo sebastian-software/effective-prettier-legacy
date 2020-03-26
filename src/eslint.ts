@@ -2,6 +2,7 @@ import { CLIEngine } from "eslint"
 
 import { debug } from "./log"
 import { APP_ROOT_PATH, ESLINT_ROOT_PATH } from "./util"
+import { FormatOptions } from "./types"
 
 // ESLint loads its plugins from the given or current CWD.
 // Unfortunately in some situations the CWD e.g. when running inside
@@ -30,7 +31,7 @@ const cwdEsLint = new CLIEngine({
   useEslintrc: true
 })
 
-export function getEslintInstance(filePath, flags) {
+export function getEslintInstance(filePath: string, flags: FormatOptions = {}) {
   const rawFileConfig = cwdEsLint.getConfigForFile(filePath)
   const stringifiedFileConfig = JSON.stringify(rawFileConfig)
 

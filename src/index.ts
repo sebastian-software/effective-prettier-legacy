@@ -6,6 +6,7 @@ import prettier from "prettier"
 
 import { getEslintInstance } from "./eslint"
 import { APP_ROOT_PATH } from "./util"
+import { FormatOptions } from "./types"
 
 const FILE_OPTIONS = { encoding: "utf-8" }
 const PRETTIER_IGNORE_FILENAME = ".prettierignore"
@@ -16,12 +17,7 @@ const performanceLogger = new PerformanceObserver((list) => {
 })
 performanceLogger.observe({ entryTypes: [ "function" ] })
 
-interface FormatOptions {
-  autoRoot?: boolean
-  verbose?: boolean
-}
-
-async function executePrettier(fileInput: string, filePath: string, options: FormatOptions) {
+async function executePrettier(fileInput: string, filePath: string, options: FormatOptions = {}) {
   const prettierInfo = await prettier.getFileInfo(filePath, {
     // Use same standard ignore path as the CLI.
     // Plus add support for auto-root mode where we automatically instruct prettier loading
