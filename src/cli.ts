@@ -6,7 +6,7 @@ import isPathInside from "is-path-inside"
 import meow from "meow"
 import PQueue from "p-queue"
 
-import { formatFile } from '.'
+import { formatFile } from "."
 
 const CWD = process.cwd()
 

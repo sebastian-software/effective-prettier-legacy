@@ -27,6 +27,8 @@ export async function formatText(fileInput: string, options: FormatOptions = {})
     ignorePath
   })
 
+  console.log("XXX", filePath, prettierInfo)
+
   const formattedByPrettier = prettierInfo.ignored ?
     fileInput :
     prettier.format(fileInput, {
