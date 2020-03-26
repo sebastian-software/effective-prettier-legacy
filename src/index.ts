@@ -14,20 +14,17 @@ const performanceLogger = new PerformanceObserver((list) => {
 performanceLogger.observe({ entryTypes: [ "function" ] })
 
 interface FormatOptions {
-  filePath?: string
   ignorePath?: string
   verbose?: boolean
 }
 
-export async function formatText(fileInput: string, options: FormatOptions = {}) {
-  const { filePath, ignorePath = ".prettierignore", verbose = false } = options
+export async function formatText(fileInput: string, filePath: string, options: FormatOptions) {
+  const { ignorePath = ".prettierignore", verbose = false } = options
   const fixingEslint = getEslintInstance(filePath, options)
 
   const prettierInfo = await prettier.getFileInfo(filePath, {
     ignorePath
   })
-
-  console.log("XXX", filePath, prettierInfo)
 
   const formattedByPrettier = prettierInfo.ignored ?
     fileInput :
@@ -36,7 +33,7 @@ export async function formatText(fileInput: string, options: FormatOptions = {})
       filepath: filePath
     })
 
-  const report = fixingEslint.executeOnText(` ${formattedByPrettier}`, filePath)
+  const report = fixingEslint.executeOnText(formattedByPrettier, filePath)
 
   if (report.usedDeprecatedRules) {
     report.usedDeprecatedRules.forEach((deprecationMessage) => {
@@ -71,7 +68,7 @@ export const formatTextMeasured = performance.timerify(formatText)
 
 export async function formatFile(filePath: string, options) {
   const fileInput = (await fs.readFile(filePath, FILE_OPTIONS)) as string
-  const fileOutput = await formatText(fileInput, { filePath, ...options })
+  const fileOutput = await formatText(fileInput, filePath, options)
 
   if (fileInput !== fileOutput) {
     if (options.verbose) {
