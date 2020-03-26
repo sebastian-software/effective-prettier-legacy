@@ -44,7 +44,7 @@ export function getEslintInstance(filePath, flags) {
   // require("debug").enable("eslint:*,-eslint:code-path");
 
   const localEslint = new CLIEngine({
-    cwd: ESLINT_ROOT_PATH,
+    cwd: flags.autoRoot ? ESLINT_ROOT_PATH : process.cwd(),
     useEslintrc: false,
     plugins: rawFileConfig.plugins
   })
@@ -61,7 +61,7 @@ export function getEslintInstance(filePath, flags) {
 
       // console.log(ruleImpl.meta)
       if (ruleImpl.meta && ruleImpl.meta.fixable) {
-        if (flags.verbose) {
+        if (flags.debug) {
           debug(`- Auto fixing: ${name}`)
         }
       } else {
@@ -74,8 +74,10 @@ export function getEslintInstance(filePath, flags) {
     }
   })
 
-  if (flags.verbose) {
+  if (flags.debug) {
     debug("Enabled rules:", fileRules)
+  } else if (flags.verbose) {
+    debug(`Enabled ${Object.keys(fileRules).length} rules`)
   }
 
   const eslintInstance = new CLIEngine({
@@ -85,7 +87,7 @@ export function getEslintInstance(filePath, flags) {
     // correctly deal with the .eslintignore file which is only
     // loaded from one location and is typically stored in the projects
     // root folder.
-    cwd: APP_ROOT_PATH,
+    cwd: flags.autoRoot ? APP_ROOT_PATH : process.cwd(),
 
     rules: fileRules,
     useEslintrc: false,

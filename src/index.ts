@@ -14,6 +14,7 @@ const performanceLogger = new PerformanceObserver((list) => {
 performanceLogger.observe({ entryTypes: [ "function" ] })
 
 interface FormatOptions {
+  autoRoot?: boolean
   verbose?: boolean
 }
 
@@ -88,9 +89,9 @@ export async function formatText(fileInput: string, filePath: string, options: F
   }
 
   if (options.verbose) {
-    if (executedTools.length) {
+    if (executedTools.length === 0) {
       console.log(`${filePath} was ignored!`)
-    } else if (changingTools.length) {
+    } else if (changingTools.length === 0) {
       console.log(`${filePath} was not modified!`)
     }
 

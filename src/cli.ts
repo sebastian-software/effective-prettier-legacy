@@ -41,6 +41,8 @@ async function main() {
 
   Options
     --verbose, -v  Increase log level
+    --auto-root, -a  Detecting project root folder automatically
+    --concurrency  Setting the number of instances to be executed in parallel
 
   Examples
     $ prettier-eslint filename.js --verbose
@@ -50,6 +52,11 @@ async function main() {
         verbose: {
           type: "boolean",
           alias: "v"
+        },
+
+        autoRoot: {
+          type: "boolean",
+          alias: "-a"
         },
 
         concurrency: {
