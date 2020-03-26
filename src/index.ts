@@ -1,6 +1,6 @@
 import { promises as fs } from "fs"
 import { PerformanceObserver, performance } from "perf_hooks"
-import { resolve } from "path"
+import { resolve, relative } from "path"
 
 import prettier from "prettier"
 
@@ -97,14 +97,16 @@ export async function formatText(fileInput: string, filePath: string, options: F
   }
 
   if (options.verbose) {
+    const fileRelPath = relative(APP_ROOT_PATH, filePath)
+
     if (executedTools.length === 0) {
-      debug(`${filePath} was ignored!`)
+      debug(`${fileRelPath} was ignored!`)
     } else if (changingTools.length === 0) {
-      debug(`${filePath} was not modified!`)
+      debug(`${fileRelPath} was not modified!`)
     }
 
-    debug(`${filePath}: Executed: ${executedTools.join(", ")}`)
-    debug(`${filePath}: Applied: ${changingTools.join(", ")}`)
+    debug(`${fileRelPath}: Executed: ${executedTools.join(", ")}`)
+    debug(`${fileRelPath}: Applied: ${changingTools.join(", ")}`)
     debug("")
   }
 
