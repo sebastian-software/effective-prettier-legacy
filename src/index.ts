@@ -17,12 +17,18 @@ const performanceLogger = new PerformanceObserver((list) => {
 })
 performanceLogger.observe({ entryTypes: [ "function" ] })
 
-async function executePrettier(fileInput: string, filePath: string, options: FormatOptions = {}) {
+async function executePrettier(
+  fileInput: string,
+  filePath: string,
+  options: FormatOptions = {}
+) {
   const prettierInfo = await prettier.getFileInfo(filePath, {
     // Use same standard ignore path as the CLI.
     // Plus add support for auto-root mode where we automatically instruct prettier loading
     // the ignore file from the project root folder instead.
-    ignorePath: options.autoRoot ? resolve(APP_ROOT_PATH, PRETTIER_IGNORE_FILENAME) : PRETTIER_IGNORE_FILENAME
+    ignorePath: options.autoRoot ?
+      resolve(APP_ROOT_PATH, PRETTIER_IGNORE_FILENAME) :
+      PRETTIER_IGNORE_FILENAME
   })
 
   if (prettierInfo.ignored) {
