@@ -18,7 +18,10 @@ interface FormatOptions {
 }
 
 async function executePrettier(fileInput: string, filePath: string, options: FormatOptions) {
-  const prettierInfo = await prettier.getFileInfo(filePath)
+  const prettierInfo = await prettier.getFileInfo(filePath, {
+    // Use same standard ignore path as the CLI.
+    ignorePath: ".prettierignore"
+  })
 
   if (prettierInfo.ignored) {
     return null
