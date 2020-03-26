@@ -1,4 +1,2 @@
 extends:
   - "@effective"
-rules:
-  "node/no-unsupported-features/node-builtins": "off"
