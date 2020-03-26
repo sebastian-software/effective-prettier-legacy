@@ -10,5 +10,5 @@ export const ESLINT_ROOT_PATH = (() => {
 
 export const APP_ROOT_PATH = (() => {
   const gitResult = spawnSync("git", [ "rev-parse", "--show-toplevel" ], { encoding: "utf-8" })
-  return gitResult && !gitResult.error ? gitResult.stdout : appRootPath.toString()
+  return gitResult && !gitResult.error ? gitResult.stdout.trim() : appRootPath.toString()
 })()
