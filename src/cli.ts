@@ -68,7 +68,7 @@ async function main() {
   verifyInput(cli.input)
 
   const fileNames = await globby(cli.input, { gitignore: true })
-  const fileTasks = fileNames.map((fileName) => processFileFactory(fileName, cli))
+  const fileTasks = fileNames.map((fileName) => processFileFactory(fileName, cli.flags))
 
   const queue = new PQueue({ concurrency: cli.flags.concurrency })
   if (cli.flags.verbose) {
