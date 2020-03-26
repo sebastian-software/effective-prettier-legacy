@@ -3,7 +3,7 @@ import type { OutputChannel } from "vscode"
 
 let channel
 try {
-  // eslint-disable-next-line global-require, @typescript-eslint/no-var-requires
+  // eslint-disable-next-line import/no-unresolved, @typescript-eslint/no-var-requires
   const vscode = require("vscode")
   channel = vscode.createOutputChannel("Prettier ESLint") as OutputChannel
 } catch (importError) {

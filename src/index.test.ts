@@ -5,9 +5,7 @@ import { formatText } from "."
 async function testFormat(filePath) {
   const nonEslintBlockedFilePath = filePath.replace("fixtures", "fix-tures")
   const input = await fs.readFile(filePath, { encoding: "utf-8" })
-  const output = await formatText(input, {
-    filePath: nonEslintBlockedFilePath,
-    ignorePath: ".nosuchfile",
+  const output = await formatText(input, nonEslintBlockedFilePath, {
     verbose: true
   })
   return output
