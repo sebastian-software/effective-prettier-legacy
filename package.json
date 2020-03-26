@@ -43,6 +43,7 @@
     "@babel/preset-env": "^7.9.0",
     "@babel/preset-typescript": "^7.9.0",
     "@effective/eslint-config": "^2.1.0",
+    "@types/app-root-path": "^1.2.4",
     "@types/jest": "^25.1.4",
     "husky": "^4.2.3",
     "jest": "^25.2.1",
