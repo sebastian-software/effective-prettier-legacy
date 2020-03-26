@@ -1,7 +1,7 @@
 import { CLIEngine } from "eslint"
 
 import { debug } from "./log"
-import { ESLINT_ROOT_PATH, APP_ROOT_PATH } from "./util"
+import { APP_ROOT_PATH, ESLINT_ROOT_PATH } from "./util"
 
 // ESLint loads its plugins from the given or current CWD.
 // Unfortunately in some situations the CWD e.g. when running inside
@@ -23,6 +23,9 @@ function warnRuleNotFound(ruleId) {
 const eslintInstanceCache = new Map()
 
 const cwdEsLint = new CLIEngine({
+  // Assumption is that the path where eslint installed also contains the
+  // relevant plugins. Therefor, also to be able to cache the instance, we
+  // execute this once per eslint installation only.
   cwd: ESLINT_ROOT_PATH,
   useEslintrc: true
 })
@@ -77,7 +80,13 @@ export function getEslintInstance(filePath, flags) {
 
   const eslintInstance = new CLIEngine({
     ...rawFileConfig,
+
+    // Using the app root is key here as otherwise we wouldn't
+    // correctly deal with the .eslintignore file which is only
+    // loaded from one location and is typically stored in the projects
+    // root folder.
     cwd: APP_ROOT_PATH,
+
     rules: fileRules,
     useEslintrc: false,
     fix: true,
