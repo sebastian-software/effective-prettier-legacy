@@ -72,7 +72,7 @@ export function getEslintInstance(filePath, flags) {
     }
   })
 
-  if (rules.verbose) {
+  if (flags.verbose) {
     debug("Enabled rules:", fileRules)
   }
 
