@@ -1,3 +1,4 @@
  function  hello() {
-    return  "powerful"
+   const msg=  "powerful"
+    return  msg
 }
