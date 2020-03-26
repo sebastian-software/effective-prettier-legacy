@@ -41,6 +41,9 @@ export function getEslintInstance(filePath, flags) {
     return cachedEslintInstance
   }
 
+  // This can be used to enable debug mode in eslint
+  // require("debug").enable("eslint:*,-eslint:code-path");
+
   const localEslint = new CLIEngine({
     cwd: ESLINT_ROOT,
     useEslintrc: false,
