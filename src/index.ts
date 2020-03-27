@@ -97,16 +97,19 @@ export async function formatText(fileInput: string, filePath: string, options: F
   }
 
   if (options.verbose) {
-    const fileRelPath = relative(APP_ROOT_PATH, filePath)
+    const fileRelativePath = relative(APP_ROOT_PATH, filePath)
 
     if (executedTools.length === 0) {
-      debug(`${fileRelPath} was ignored!`)
-    } else if (changingTools.length === 0) {
-      debug(`${fileRelPath} was not modified!`)
+      debug(`${fileRelativePath} was ignored!`)
+    } else {
+      if (changingTools.length === 0) {
+        debug(`${fileRelativePath} was not modified!`)
+      }
+
+      debug(`${fileRelativePath}: Executed: ${executedTools.length > 0 ? executedTools.join(", ") : '---'}`)
+      debug(`${fileRelativePath}: Applied: ${changingTools.length > 0 ? changingTools.join(", ") : '---'}`)
     }
 
-    debug(`${fileRelPath}: Executed: ${executedTools.join(", ")}`)
-    debug(`${fileRelPath}: Applied: ${changingTools.join(", ")}`)
     debug("")
   }
 
