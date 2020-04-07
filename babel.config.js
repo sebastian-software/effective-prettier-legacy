@@ -7,7 +7,6 @@ module.exports = (api) => {
   const isCli = caller === "@babel/node"
   const isTest = (/\b(test)\b/).exec(environment)
   const modules = (isTest && !isBundler) || isCli ? "commonjs" : false
-  const isUmd = (/\b(umd)\b/).exec(environment)
 
   return {
     sourceMaps: true,
@@ -19,21 +18,17 @@ module.exports = (api) => {
           loose: true
         }
       ],
-      isUmd ?
-        null :
-        [
-          "@babel/transform-runtime",
-          {
-            helpers: true,
-            regenerator: false
-          }
-        ]
+      [
+        "@babel/transform-runtime",
+        {
+          helpers: true
+        }
+      ]
     ].filter(Boolean),
     presets: [
       [
         "@babel/env",
         {
-          exclude: [ "transform-regenerator", "transform-async-to-generator" ],
           useBuiltIns: "usage",
           targets: {
             node: 10
