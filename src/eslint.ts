@@ -31,6 +31,10 @@ const cwdEsLint = new CLIEngine({
   useEslintrc: true
 })
 
+function getRuleLevel(entry) {
+  return Array.isArray(entry) ? entry[0] : entry
+}
+
 export function getEslintInstance(filePath: string, flags: FormatOptions = {}) {
   const rawFileConfig = cwdEsLint.getConfigForFile(filePath)
   const stringifiedFileConfig = JSON.stringify(rawFileConfig)
@@ -60,7 +64,7 @@ export function getEslintInstance(filePath: string, flags: FormatOptions = {}) {
   Object.entries(fileRules).forEach(([ name, rule ]) => {
     const ruleImpl = rules.get(name)
     if (ruleImpl) {
-      if (fileRules[name] === "off" || fileRules[name][0] === "off") {
+      if (getRuleLevel(rule) === "off") {
         delete fileRules[name]
         return
       }
@@ -85,6 +89,13 @@ export function getEslintInstance(filePath: string, flags: FormatOptions = {}) {
   } else if (flags.verbose) {
     debug(`Enabled ${Object.keys(fileRules).length} rules`)
   }
+
+  // Warn on "error"-level auto-fixable rules
+  Object.entries(fileRules).forEach(([ name, rule ]) => {
+    if (getRuleLevel(rule) === "error") {
+      debug(`Hint: Rule "${name}" is auto-fixable and need not be set to level error!`)
+    }
+  })
 
   const eslintInstance = new CLIEngine({
     ...rawFileConfig,
