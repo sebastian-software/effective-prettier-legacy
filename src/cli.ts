@@ -5,6 +5,7 @@ import globParent from "glob-parent"
 import isPathInside from "is-path-inside"
 import meow from "meow"
 import PQueue from "p-queue"
+import cpuCount from "physical-cpu-count"
 
 import { formatFile } from "."
 
@@ -26,7 +27,9 @@ function verifyInput(paths) {
 
 function processFileFactory(fileName, options) {
   return async () => {
-    console.log(`Processing: ${fileName}...`)
+    if (options.verbose) {
+      console.log(`Processing: ${fileName}...`)
+    }
 
     const filePath = path.resolve(fileName)
     await formatFile(filePath, options)
@@ -42,7 +45,7 @@ async function main() {
   Options
     --verbose, -v  Increase log level
     --auto-root, -a  Detecting project root folder automatically
-    --concurrency  Setting the number of instances to be executed in parallel
+    --concurrency  Setting the number of instances to be executed in parallel (default: CPU count)
 
   Examples
     $ prettier-eslint filename.js --verbose
@@ -61,7 +64,7 @@ async function main() {
 
         concurrency: {
           type: "number",
-          default: 4
+          default: cpuCount
         }
       }
     }
