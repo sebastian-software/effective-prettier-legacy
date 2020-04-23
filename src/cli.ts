@@ -72,6 +72,10 @@ async function main() {
     console.log("Flags: ", cli.flags)
   }
 
+  if (cli.input.length === 0) {
+    cli.showHelp()
+  }
+
   verifyInput(cli.input)
 
   const fileNames = await globby(cli.input, { gitignore: true })
