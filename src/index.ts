@@ -1,6 +1,6 @@
 import { promises as fs } from "fs"
 import { PerformanceObserver, performance } from "perf_hooks"
-import { resolve, relative } from "path"
+import { relative, resolve } from "path"
 
 import prettier from "prettier"
 
@@ -106,8 +106,16 @@ export async function formatText(fileInput: string, filePath: string, options: F
         debug(`${fileRelativePath} was not modified!`)
       }
 
-      debug(`${fileRelativePath}: Executed: ${executedTools.length > 0 ? executedTools.join(", ") : '---'}`)
-      debug(`${fileRelativePath}: Applied: ${changingTools.length > 0 ? changingTools.join(", ") : '---'}`)
+      debug(
+        `${fileRelativePath}: Executed: ${
+          executedTools.length > 0 ? executedTools.join(", ") : "---"
+        }`
+      )
+      debug(
+        `${fileRelativePath}: Applied: ${
+          changingTools.length > 0 ? changingTools.join(", ") : "---"
+        }`
+      )
     }
 
     debug("")

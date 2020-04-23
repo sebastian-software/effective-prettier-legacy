@@ -93,7 +93,7 @@ export function getEslintInstance(filePath: string, flags: FormatOptions = {}) {
   // Warn on "error"-level auto-fixable rules
   Object.entries(fileRules).forEach(([ name, rule ]) => {
     if (getRuleLevel(rule) === "error") {
-      debug(`Hint: Rule "${name}" is auto-fixable and need not be set to level error!`)
+      debug(`Hint: Rule "${name}" is auto-fixable and need not be set to level error!`, rule)
     }
   })
 
