@@ -2,8 +2,8 @@
 
 exports[`Auto formatting Autofix 1 1`] = `
 "function hello() {
-  const message = \\"powerful\\"
-  return message
+  const msg = \\"powerful\\"
+  return msg
 }
 "
 `;
