@@ -1,7 +1,11 @@
+/* eslint-disable max-statements */
+
 import { promises as fs } from "fs"
-import { PerformanceObserver, performance } from "perf_hooks"
+import { performance } from "perf_hooks"
 import { relative, resolve } from "path"
 
+import chalk from "chalk"
+import figures from "figures"
 import prettier from "prettier"
 
 import { getEslintInstance } from "./eslint"
@@ -11,12 +15,6 @@ import { debug } from "./log"
 
 const FILE_OPTIONS = { encoding: "utf-8" }
 const PRETTIER_IGNORE_FILENAME = ".prettierignore"
-
-const performanceLogger = new PerformanceObserver((list) => {
-  const entry = list.getEntries()[0]
-  debug(`${entry.name}(): ${entry.duration.toFixed(0)}ms`)
-})
-performanceLogger.observe({ entryTypes: [ "function" ] })
 
 async function executePrettier(
   fileInput: string,
@@ -87,6 +85,7 @@ interface ToolTracking {
 
 export async function formatText(fileInput: string, filePath: string, options: FormatOptions) {
   const toolTracking: ToolTracking = {}
+  const startTime = performance.now()
 
   let fileOutput = fileInput
 
@@ -121,18 +120,18 @@ export async function formatText(fileInput: string, filePath: string, options: F
     }
   }
 
-  if (options.verbose) {
-    const fileRelativePath = relative(process.cwd(), filePath)
+  const fileRelativePath = relative(process.cwd(), filePath)
+  const stopTime = performance.now()
+  const duration = `${Math.round(stopTime - startTime)}ms`
 
-    if (toolTracking.prettier || toolTracking.eslint || toolTracking.stylelint) {
-      if (toolTracking.prettier !== TrackingStatus.applied && toolTracking.eslint !== TrackingStatus.applied && toolTracking.stylelint !== TrackingStatus.applied) {
-        debug(`${fileRelativePath} was not modified!`, JSON.stringify(toolTracking))
-      } else {
-        debug(`${fileRelativePath} was modified!`, JSON.stringify(toolTracking))
-      }
+  if (toolTracking.prettier != null || toolTracking.eslint != null  || toolTracking.stylelint != null ) {
+    if (toolTracking.prettier !== TrackingStatus.applied && toolTracking.eslint !== TrackingStatus.applied && toolTracking.stylelint !== TrackingStatus.applied) {
+      debug(chalk.dim(`- ${fileRelativePath}: ${chalk.yellow(figures.cross)} ${duration}`))
     } else {
-      debug(`${fileRelativePath} was ignored!`)
+      debug(`- ${fileRelativePath}: ${chalk.green(figures.tick)} ${duration}`)
     }
+  } else {
+    debug(chalk.dim(`- ${fileRelativePath}: ${chalk.red(figures.bullet)} ${duration}`))
   }
 
   return fileOutput

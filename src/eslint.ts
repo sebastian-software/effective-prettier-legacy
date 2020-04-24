@@ -1,3 +1,5 @@
+import path from "path"
+
 import { CLIEngine } from "eslint"
 
 import { debug } from "./log"
@@ -33,6 +35,11 @@ const cwdEsLint = new CLIEngine({
 
 function getRuleLevel(entry) {
   return Array.isArray(entry) ? entry[0] : entry
+}
+
+export function preboot() {
+  const rootFile = path.join(process.cwd(), "index.js")
+  getEslintInstance(rootFile)
 }
 
 export function getEslintInstance(filePath: string, flags: FormatOptions = {}) {

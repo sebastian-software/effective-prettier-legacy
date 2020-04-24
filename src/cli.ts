@@ -8,6 +8,7 @@ import PQueue from "p-queue"
 import cpuCount from "physical-cpu-count"
 
 import { formatFile } from "."
+import { preboot } from "./eslint"
 
 const CWD = process.cwd()
 
@@ -36,6 +37,11 @@ function processFileFactory(fileName, options) {
   }
 }
 
+// Booting up new instances is time consuming. It only makes sense
+// if it consumes less time than multi threading saves. This value
+// is based on some rough testing.
+const MIN_FILES_PER_THREAD = 20
+
 async function main() {
   const cli = meow(
     `
@@ -45,7 +51,7 @@ async function main() {
   Options
     --verbose, -v  Increase log level
     --auto-root, -a  Detecting project root folder automatically
-    --concurrency  Setting the number of instances to be executed in parallel (default: CPU count)
+    --concurrency  Setting the number of instances to be executed in parallel
 
   Examples
     $ prettier-eslint filename.js --verbose
@@ -63,8 +69,7 @@ async function main() {
         },
 
         concurrency: {
-          type: "number",
-          default: cpuCount
+          type: "number"
         }
       }
     }
@@ -84,14 +89,19 @@ async function main() {
   const fileNames = await globby(cli.input, { gitignore: true })
   const fileTasks = fileNames.map((fileName) => processFileFactory(fileName, cli.flags))
 
-  const queue = new PQueue({ concurrency: cli.flags.concurrency })
+  const concurrency = cli.flags.concurrency || Math.min(Math.max(1, Math.round(fileNames.length / MIN_FILES_PER_THREAD)), cpuCount)
+
+  const queue = new PQueue({ concurrency })
   // if (cli.flags.verbose) {
   //   queue.on("active", () => {
   //     console.log(`Queue Size: ${queue.size}`)
   //   })
   // }
 
-  await queue.addAll(fileTasks)
+  if (fileTasks.length > 0) {
+    preboot()
+    await queue.addAll(fileTasks)
+  }
 }
 
 main()
