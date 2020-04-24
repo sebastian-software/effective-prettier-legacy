@@ -85,11 +85,11 @@ async function main() {
   const fileTasks = fileNames.map((fileName) => processFileFactory(fileName, cli.flags))
 
   const queue = new PQueue({ concurrency: cli.flags.concurrency })
-  if (cli.flags.verbose) {
-    queue.on("active", () => {
-      console.log(`Queue Size: ${queue.size}`)
-    })
-  }
+  // if (cli.flags.verbose) {
+  //   queue.on("active", () => {
+  //     console.log(`Queue Size: ${queue.size}`)
+  //   })
+  // }
 
   await queue.addAll(fileTasks)
 }

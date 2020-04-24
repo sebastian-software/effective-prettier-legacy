@@ -66,7 +66,7 @@ async function executeEslint(fileInput, filePath, options: FormatOptions) {
   if (options.verbose) {
     if (fileResult.messages) {
       fileResult.messages.forEach((messageEntry) => {
-        debug(`Message: ${messageEntry.ruleId}: ${messageEntry.message} at ${messageEntry.line}`)
+        debug(`${filePath}: ${messageEntry.ruleId}: ${messageEntry.message} @${messageEntry.line}`)
       })
     }
   }
@@ -74,58 +74,65 @@ async function executeEslint(fileInput, filePath, options: FormatOptions) {
   return fileResult.output ? fileResult.output : false
 }
 
+enum TrackingStatus {
+  executed,
+  applied
+}
+
+interface ToolTracking {
+  prettier?: TrackingStatus
+  eslint?: TrackingStatus
+  stylelint?: TrackingStatus
+}
+
 export async function formatText(fileInput: string, filePath: string, options: FormatOptions) {
-  const executedTools: string[] = []
-  const changingTools: string[] = []
+  const toolTracking: ToolTracking = {}
 
   let fileOutput = fileInput
 
   const prettierResult = await executePrettier(fileOutput, filePath, options)
   if (prettierResult != null) {
-    executedTools.push("prettier")
+    toolTracking.prettier = TrackingStatus.executed
     if (prettierResult) {
-      changingTools.push("prettier")
+      toolTracking.prettier = TrackingStatus.applied
       fileOutput = prettierResult
     }
   }
 
   const eslintResult = await executeEslint(fileOutput, filePath, options)
   if (eslintResult != null) {
-    executedTools.push("eslint")
+    toolTracking.eslint = TrackingStatus.executed
     if (eslintResult) {
-      changingTools.push("eslint")
+      toolTracking.eslint = TrackingStatus.applied
       fileOutput = eslintResult
     }
   }
 
-  // Reset changing tools if in the end the same result was produced.
+  // Reduce tools if in the end the same result was produced.
   if (fileOutput === fileInput) {
-    changingTools.length = 0
+    if (toolTracking.prettier === TrackingStatus.applied) {
+      toolTracking.prettier = TrackingStatus.executed
+    }
+    if (toolTracking.eslint === TrackingStatus.applied) {
+      toolTracking.eslint = TrackingStatus.executed
+    }
+    if (toolTracking.stylelint === TrackingStatus.applied) {
+      toolTracking.stylelint = TrackingStatus.executed
+    }
   }
 
   if (options.verbose) {
-    const fileRelativePath = relative(APP_ROOT_PATH, filePath)
+    const fileRelativePath = relative(process.cwd(), filePath)
 
-    if (executedTools.length === 0) {
-      debug(`${fileRelativePath} was ignored!`)
-    } else {
-      if (changingTools.length === 0) {
-        debug(`${fileRelativePath} was not modified!`)
+    if (toolTracking.prettier || toolTracking.eslint || toolTracking.stylelint) {
+      if (toolTracking.prettier !== TrackingStatus.applied && toolTracking.eslint !== TrackingStatus.applied && toolTracking.stylelint !== TrackingStatus.applied) {
+        debug(`${fileRelativePath} was not modified!`, JSON.stringify(toolTracking))
+      } else {
+        debug(`${fileRelativePath} was modified!`, JSON.stringify(toolTracking))
       }
-
-      debug(
-        `${fileRelativePath}: Executed: ${
-          executedTools.length > 0 ? executedTools.join(", ") : "---"
-        }`
-      )
-      debug(
-        `${fileRelativePath}: Applied: ${
-          changingTools.length > 0 ? changingTools.join(", ") : "---"
-        }`
-      )
+    } else {
+      debug(`${fileRelativePath} was ignored!`)
     }
-
-    debug("")
   }
 
   return fileOutput
