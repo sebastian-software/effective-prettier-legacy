@@ -89,7 +89,9 @@ async function main() {
   const fileNames = await globby(cli.input, { gitignore: true })
   const fileTasks = fileNames.map((fileName) => processFileFactory(fileName, cli.flags))
 
-  const concurrency = cli.flags.concurrency || Math.min(Math.max(1, Math.round(fileNames.length / MIN_FILES_PER_THREAD)), cpuCount)
+  const concurrency =
+    cli.flags.concurrency ||
+    Math.min(Math.max(1, Math.round(fileNames.length / MIN_FILES_PER_THREAD)), cpuCount)
 
   const queue = new PQueue({ concurrency })
   // if (cli.flags.verbose) {

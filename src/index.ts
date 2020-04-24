@@ -64,7 +64,9 @@ async function executeEslint(fileInput, filePath, options: FormatOptions) {
   if (options.verbose) {
     if (fileResult.messages) {
       fileResult.messages.forEach((messageEntry) => {
-        debug(`${filePath}: ${messageEntry.ruleId}: ${messageEntry.message} @${messageEntry.line}`)
+        debug(
+          `${filePath}: ${messageEntry.ruleId}: ${messageEntry.message} @${messageEntry.line}`
+        )
       })
     }
   }
@@ -124,8 +126,16 @@ export async function formatText(fileInput: string, filePath: string, options: F
   const stopTime = performance.now()
   const duration = `${Math.round(stopTime - startTime)}ms`
 
-  if (toolTracking.prettier != null || toolTracking.eslint != null  || toolTracking.stylelint != null ) {
-    if (toolTracking.prettier !== TrackingStatus.applied && toolTracking.eslint !== TrackingStatus.applied && toolTracking.stylelint !== TrackingStatus.applied) {
+  if (
+    toolTracking.prettier != null ||
+    toolTracking.eslint != null ||
+    toolTracking.stylelint != null
+  ) {
+    if (
+      toolTracking.prettier !== TrackingStatus.applied &&
+      toolTracking.eslint !== TrackingStatus.applied &&
+      toolTracking.stylelint !== TrackingStatus.applied
+    ) {
       debug(chalk.dim(`- ${fileRelativePath}: ${chalk.yellow(figures.cross)} ${duration}`))
     } else {
       debug(`- ${fileRelativePath}: ${chalk.green(figures.tick)} ${duration}`)
