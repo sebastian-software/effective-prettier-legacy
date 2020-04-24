@@ -63,10 +63,12 @@ async function executeEslint(fileInput, filePath, options: FormatOptions) {
     return null
   }
 
-  if (fileResult.messages) {
-    fileResult.messages.forEach((messageEntry) => {
-      debug(messageEntry)
-    })
+  if (options.verbose) {
+    if (fileResult.messages) {
+      fileResult.messages.forEach((messageEntry) => {
+        debug(`Message: ${messageEntry.ruleId}: ${messageEntry.message} at ${messageEntry.line}`)
+      })
+    }
   }
 
   return fileResult.output ? fileResult.output : false
@@ -94,6 +96,11 @@ export async function formatText(fileInput: string, filePath: string, options: F
       changingTools.push("eslint")
       fileOutput = eslintResult
     }
+  }
+
+  // Reset changing tools if in the end the same result was produced.
+  if (fileOutput === fileInput) {
+    changingTools.length = 0
   }
 
   if (options.verbose) {
