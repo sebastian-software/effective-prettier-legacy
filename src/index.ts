@@ -161,3 +161,5 @@ export async function formatFile(filePath: string, options) {
     await fs.writeFile(filePath, fileOutput, FILE_OPTIONS)
   }
 }
+
+export const version = process.env.BUNDLE_VERSION
