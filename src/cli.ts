@@ -7,7 +7,7 @@ import meow from "meow"
 import PQueue from "p-queue"
 import cpuCount from "physical-cpu-count"
 
-import { formatFile } from "."
+import prettier from "."
 import { preboot } from "./eslint"
 
 const CWD = process.cwd()
@@ -33,7 +33,7 @@ function processFileFactory(fileName, options) {
     }
 
     const filePath = path.resolve(fileName)
-    await formatFile(filePath, options)
+    await prettier.formatFile(filePath, options)
   }
 }
 

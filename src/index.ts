@@ -85,7 +85,7 @@ interface ToolTracking {
   stylelint?: TrackingStatus
 }
 
-export async function formatText(fileInput: string, filePath: string, options: FormatOptions) {
+async function formatText(fileInput: string, filePath: string, options: FormatOptions) {
   const toolTracking: ToolTracking = {}
   const startTime = performance.now()
 
@@ -147,9 +147,7 @@ export async function formatText(fileInput: string, filePath: string, options: F
   return fileOutput
 }
 
-export const formatTextMeasured = performance.timerify(formatText)
-
-export async function formatFile(filePath: string, options) {
+async function formatFile(filePath: string, options) {
   const fileInput = (await fs.readFile(filePath, FILE_OPTIONS)) as string
   const fileOutput = await formatText(fileInput, filePath, options)
 
@@ -162,4 +160,10 @@ export async function formatFile(filePath: string, options) {
   }
 }
 
-export const version = process.env.BUNDLE_VERSION
+const version = process.env.BUNDLE_VERSION
+
+export default {
+  formatText,
+  formatFile,
+  version
+}
