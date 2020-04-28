@@ -14,6 +14,7 @@ import { FormatOptions } from "./types"
 // Via: https://stackoverflow.com/a/49455609
 
 const warnedOnRules = new Set()
+
 function warnRuleNotFound(ruleId) {
   if (warnedOnRules.has(ruleId)) {
     return

@@ -2,6 +2,7 @@
 import type { OutputChannel } from "vscode"
 
 let channel
+
 try {
   // eslint-disable-next-line import/no-unresolved, @typescript-eslint/no-var-requires
   const vscode = require("vscode")
