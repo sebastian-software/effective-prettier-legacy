@@ -12,11 +12,19 @@ async function testFormat(filePath) {
 }
 
 describe("Auto formatting", () => {
-  test("Autofix 1", async () => {
-    expect(await testFormat("./src/fixtures/autofix1.js")).toMatchSnapshot()
+  test("JavaScript 1", async () => {
+    expect(await testFormat("./src/fixtures/javascript-1.js")).toMatchSnapshot()
   })
 
-  test("Autofix 2", async () => {
-    expect(await testFormat("./src/fixtures/autofix2.js")).toMatchSnapshot()
+  test("JavaScript 2", async () => {
+    expect(await testFormat("./src/fixtures/javascript-2.js")).toMatchSnapshot()
+  })
+
+  test("TypeScript 1", async () => {
+    expect(await testFormat("./src/fixtures/typescript-1.ts")).toMatchSnapshot()
+  })
+
+  test("Markdown 1", async () => {
+    expect(await testFormat("./src/fixtures/markdown-1.md")).toMatchSnapshot()
   })
 })

@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Auto formatting Autofix 1 1`] = `
+exports[`Auto formatting JavaScript 1 1`] = `
 "function hello() {
   const msg = \\"powerful\\"
   return msg
@@ -8,7 +8,40 @@ exports[`Auto formatting Autofix 1 1`] = `
 "
 `;
 
-exports[`Auto formatting Autofix 2 1`] = `
+exports[`Auto formatting JavaScript 2 1`] = `
 "const msgs = [ \\"hello\\", \\"world\\", \\"from\\", \\"our\\", \\"test\\" ]
+"
+`;
+
+exports[`Auto formatting Markdown 1 1`] = `
+"## Header
+
+- List Option 1
+- List _Option_ 2
+
+\`\`\`js
+function main() {
+  callMethod()
+}
+\`\`\`
+
+- Another option
+
+### Another header
+
+Indented
+"
+`;
+
+exports[`Auto formatting TypeScript 1 1`] = `
+"interface foo {
+  pub1: string
+}
+
+export class Foo implements foo {
+  constructor() {
+    hello()
+  }
+}
 "
 `;
