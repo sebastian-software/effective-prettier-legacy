@@ -1,0 +1,9 @@
+ {
+  "name": "@effective/prettier",
+  "description": "A leaner and more up-to-date alternative to prettier-eslint.",
+    "repository": {
+     "type": "git",
+   "url": "git+https://github.com/sebastian-software/effective-prettier.git"
+  },
+   "version"  : "2.2.2"
+ }

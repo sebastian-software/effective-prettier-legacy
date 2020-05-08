@@ -24,6 +24,10 @@ describe("Auto formatting", () => {
     expect(await testFormat("./src/fixtures/typescript-1.ts")).toMatchSnapshot()
   })
 
+  test("JSON 1", async () => {
+    expect(await testFormat("./src/fixtures/json-1.json")).toMatchSnapshot()
+  })
+
   test("Markdown 1", async () => {
     expect(await testFormat("./src/fixtures/markdown-1.md")).toMatchSnapshot()
   })

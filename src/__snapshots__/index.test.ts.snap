@@ -1,5 +1,18 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Auto formatting JSON 1 1`] = `
+"{
+  \\"name\\": \\"@effective/prettier\\",
+  \\"description\\": \\"A leaner and more up-to-date alternative to prettier-eslint.\\",
+  \\"repository\\": {
+    \\"type\\": \\"git\\",
+    \\"url\\": \\"git+https://github.com/sebastian-software/effective-prettier.git\\"
+  },
+  \\"version\\": \\"2.2.2\\"
+}
+"
+`;
+
 exports[`Auto formatting JavaScript 1 1`] = `
 "function hello() {
   const msg = \\"powerful\\"

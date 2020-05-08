@@ -3,6 +3,7 @@
 import { promises as fs } from "fs"
 import { performance } from "perf_hooks"
 import { relative, resolve } from "path"
+import { extname } from "path"
 
 import chalk from "chalk"
 import figures from "figures"
@@ -25,9 +26,9 @@ async function executePrettier(
     // Use same standard ignore path as the CLI.
     // Plus add support for auto-root mode where we automatically instruct prettier loading
     // the ignore file from the project root folder instead.
-    ignorePath: options.autoRoot ?
-      resolve(APP_ROOT_PATH, PRETTIER_IGNORE_FILENAME) :
-      PRETTIER_IGNORE_FILENAME
+    ignorePath: options.autoRoot
+      ? resolve(APP_ROOT_PATH, PRETTIER_IGNORE_FILENAME)
+      : PRETTIER_IGNORE_FILENAME
   })
 
   if (prettierInfo.ignored) {
@@ -35,7 +36,7 @@ async function executePrettier(
   }
 
   const fileOutput = prettier.format(fileInput, {
-    ...await prettier.resolveConfig(filePath),
+    ...(await prettier.resolveConfig(filePath)),
     filepath: filePath
   })
 
@@ -46,7 +47,13 @@ async function executePrettier(
   return fileOutput
 }
 
+const ESLINT_SUPPORTED = new Set([".js", ".jsx", ".mjs", ".ts", ".tsx"])
+
 async function executeEslint(fileInput, filePath, options: FormatOptions) {
+  if (!ESLINT_SUPPORTED.has(extname(filePath))) {
+    return null
+  }
+
   const fixingEslint = getEslintInstance(filePath, options)
   const report = fixingEslint.executeOnText(fileInput, filePath)
 
