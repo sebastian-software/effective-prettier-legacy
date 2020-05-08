@@ -36,7 +36,7 @@ async function executePrettier(
   }
 
   const fileOutput = prettier.format(fileInput, {
-    ...(await prettier.resolveConfig(filePath)),
+    ...await prettier.resolveConfig(filePath),
     filepath: filePath
   })
 
@@ -47,7 +47,7 @@ async function executePrettier(
   return fileOutput
 }
 
-const ESLINT_SUPPORTED = new Set([".js", ".jsx", ".mjs", ".ts", ".tsx"])
+const ESLINT_SUPPORTED = new Set([ ".js", ".jsx", ".mjs", ".ts", ".tsx" ])
 
 async function executeEslint(fileInput, filePath, options: FormatOptions) {
   if (!ESLINT_SUPPORTED.has(extname(filePath))) {
