@@ -2,8 +2,8 @@
 
 import { promises as fs } from "fs"
 import { performance } from "perf_hooks"
-import { relative, resolve } from "path"
-import { extname } from "path"
+import { extname, relative , resolve } from "path"
+
 
 import chalk from "chalk"
 import figures from "figures"
