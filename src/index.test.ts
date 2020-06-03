@@ -3,10 +3,10 @@ import { promises as fs } from "fs"
 import prettier from "."
 
 async function testFormat(filePath) {
-  const nonEslintBlockedFilePath = filePath.replace("fixtures", "fix-tures")
   const input = await fs.readFile(filePath, { encoding: "utf-8" })
-  const output = await prettier.formatText(input, nonEslintBlockedFilePath, {
-    verbose: true
+  const output = await prettier.formatText(input, filePath, {
+    verbose: true,
+    skipIgnore: true
   })
   return output
 }

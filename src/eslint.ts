@@ -117,6 +117,7 @@ export function getEslintInstance(filePath: string, flags: FormatOptions = {}) {
     rules: fileRules,
     useEslintrc: false,
     fix: true,
+    ignore: !flags.skipIgnore,
     globals: []
   })
 

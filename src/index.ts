@@ -31,7 +31,7 @@ async function executePrettier(
       : PRETTIER_IGNORE_FILENAME
   })
 
-  if (prettierInfo.ignored) {
+  if (!options.skipIgnore && prettierInfo.ignored) {
     return null
   }
 

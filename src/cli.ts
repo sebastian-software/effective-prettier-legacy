@@ -51,6 +51,7 @@ async function main() {
   Options
     --verbose, -v  Increase log level
     --auto-root, -a  Detecting project root folder automatically
+    --skip-ignore, -s  Skip checking any ignore files
     --concurrency  Setting the number of instances to be executed in parallel
 
   Examples
@@ -65,7 +66,12 @@ async function main() {
 
         autoRoot: {
           type: "boolean",
-          alias: "-a"
+          alias: "a"
+        },
+
+        skipIgnore: {
+          type: "boolean",
+          alias: "s"
         },
 
         concurrency: {
