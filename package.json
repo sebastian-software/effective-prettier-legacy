@@ -25,7 +25,7 @@
     "release": "git push && release-it --ci patch",
     "release:major": "git push && release-it --ci major",
     "release:minor": "git push && release-it --ci minor",
-    "test": "jest --silent",
+    "test": "jest",
     "watch": "preppy --watch"
   },
   "dependencies": {
