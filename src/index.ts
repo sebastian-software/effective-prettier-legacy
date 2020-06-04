@@ -1,12 +1,12 @@
 /* eslint-disable max-statements */
 
-import { promises as fs, BufferEncoding } from "fs"
+import { BufferEncoding, promises as fs } from "fs"
 import { performance } from "perf_hooks"
 import { extname, relative, resolve } from "path"
 
 import chalk from "chalk"
 import figures from "figures"
-import prettier, { SupportInfo, FileInfoResult } from "prettier"
+import prettier, { FileInfoResult, SupportInfo } from "prettier"
 
 import { getEslintInstance } from "./eslint"
 import { APP_ROOT_PATH } from "./util"
