@@ -1,19 +1,19 @@
 /* eslint-disable max-statements */
 
-import { promises as fs } from "fs"
+import { promises as fs, BufferEncoding } from "fs"
 import { performance } from "perf_hooks"
 import { extname, relative, resolve } from "path"
 
 import chalk from "chalk"
 import figures from "figures"
-import prettier from "prettier"
+import prettier, { SupportInfo, FileInfoResult } from "prettier"
 
 import { getEslintInstance } from "./eslint"
 import { APP_ROOT_PATH } from "./util"
 import { FormatOptions } from "./types"
 import { debug } from "./log"
 
-const FILE_OPTIONS = { encoding: "utf-8" }
+const FILE_OPTIONS: BufferEncoding = "utf-8"
 const PRETTIER_IGNORE_FILENAME = ".prettierignore"
 
 async function executePrettier(
@@ -166,9 +166,19 @@ async function formatFile(filePath: string, options) {
   }
 }
 
+function getPrettierSupportInfo(): SupportInfo {
+  return prettier.getSupportInfo()
+}
+
+function getPrettierFileInfo(filePath: string): Promise<FileInfoResult> {
+  return prettier.getFileInfo(filePath)
+}
+
 const version = process.env.BUNDLE_VERSION
 
 export default {
+  getPrettierSupportInfo,
+  getPrettierFileInfo,
   formatText,
   formatFile,
   version
