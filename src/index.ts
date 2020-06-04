@@ -6,7 +6,7 @@ import { extname, relative, resolve } from "path"
 
 import chalk from "chalk"
 import figures from "figures"
-import prettier, { FileInfoResult, SupportInfo } from "prettier"
+import prettier from "prettier"
 
 import { getEslintInstance } from "./eslint"
 import { APP_ROOT_PATH } from "./util"
@@ -166,19 +166,16 @@ async function formatFile(filePath: string, options) {
   }
 }
 
-function getPrettierSupportInfo(): SupportInfo {
-  return prettier.getSupportInfo()
-}
-
-function getPrettierFileInfo(filePath: string): Promise<FileInfoResult> {
-  return prettier.getFileInfo(filePath)
-}
+const getPrettierSupportInfo = prettier.getSupportInfo
+const getPrettierFileInfo = prettier.getFileInfo
+const clearPrettierConfigCache = prettier.clearConfigCache
 
 const version = process.env.BUNDLE_VERSION
 
 export default {
   getPrettierSupportInfo,
   getPrettierFileInfo,
+  clearPrettierConfigCache,
   formatText,
   formatFile,
   version
