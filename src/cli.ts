@@ -52,6 +52,7 @@ async function main() {
     --verbose, -v  Increase log level
     --auto-root, -a  Detecting project root folder automatically
     --skip-ignore, -s  Skip checking any ignore files
+    --enable-typed, -t  Enable ESLint rules which require types (slower)
     --concurrency  Setting the number of instances to be executed in parallel
 
   Examples
@@ -72,6 +73,11 @@ async function main() {
         skipIgnore: {
           type: "boolean",
           alias: "s"
+        },
+
+        enableTyped: {
+          type: "boolean",
+          alias: "t"
         },
 
         concurrency: {
@@ -107,7 +113,7 @@ async function main() {
   // }
 
   if (fileTasks.length > 0) {
-    preboot()
+    preboot(cli.flags)
 
     try {
       await queue.addAll(fileTasks)

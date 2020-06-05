@@ -39,9 +39,9 @@ function getRuleLevel(entry) {
   return Array.isArray(entry) ? entry[0] : entry
 }
 
-export function preboot() {
+export function preboot(flags) {
   const rootFile = path.join(process.cwd(), "index.js")
-  getEslintInstance(rootFile)
+  getEslintInstance(rootFile, flags)
 }
 
 export function getEslintInstance(filePath: string, flags: FormatOptions = {}) {
@@ -70,7 +70,7 @@ export function getEslintInstance(filePath: string, flags: FormatOptions = {}) {
   const rules = localEslint.getRules()
   const fileRules = rawFileConfig.rules
 
-  Object.entries(fileRules).forEach(([ name, rule ]) => {
+  Object.entries(fileRules).forEach(([name, rule]) => {
     const ruleImpl = rules.get(name)
     if (ruleImpl) {
       if (getRuleLevel(rule) === "off") {
@@ -80,12 +80,20 @@ export function getEslintInstance(filePath: string, flags: FormatOptions = {}) {
 
       // console.log(ruleImpl.meta)
       if (ruleImpl.meta && ruleImpl.meta.fixable) {
-        if (flags.debug) {
-          debug(`- Auto fixing: ${name}`)
+        // That's a flag being introduced by @typescript-eslint
+        // to mark rules which require the type checker
+        if (ruleImpl.meta.docs && ruleImpl.meta.docs.requiresTypeChecking && !flags.enableTyped) {
+          // Disable type-based formatting rule
+          // This is typically too slow for regular execution
+          delete fileRules[name]
+          if (flags.debug) {
+            debug(`- Disabled type-based auto-fixable rule: ${name} [${ruleImpl.meta.type}] [fixes: ${ruleImpl.meta.fixable}]`)
+          }
+        } else if (flags.debug) {
+          debug(`- Auto fixing: ${name} [${ruleImpl.meta.type}] [fixes: ${ruleImpl.meta.fixable}]`)
         }
       } else {
         // Disable all non-fixable rules
-        // fileRules[name] = "off"
         delete fileRules[name]
       }
     } else {
@@ -100,7 +108,7 @@ export function getEslintInstance(filePath: string, flags: FormatOptions = {}) {
   }
 
   // Warn on "error"-level auto-fixable rules
-  Object.entries(fileRules).forEach(([ name, rule ]) => {
+  Object.entries(fileRules).forEach(([name, rule]) => {
     if (getRuleLevel(rule) === "error") {
       debug(
         chalk.yellow(
@@ -111,8 +119,17 @@ export function getEslintInstance(filePath: string, flags: FormatOptions = {}) {
     }
   })
 
+  // Force override for prevent building up type information
+  const parserOptions = rawFileConfig.parserOptions
+  if (parserOptions && !flags.enableTyped) {
+    console.log("DELETE!!!")
+    delete parserOptions.project
+  }
+
   const eslintInstance = new CLIEngine({
     ...rawFileConfig,
+
+    parserOptions,
 
     // Using the app root is key here as otherwise we wouldn't
     // correctly deal with the .eslintignore file which is only
