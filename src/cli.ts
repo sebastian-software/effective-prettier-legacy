@@ -111,7 +111,11 @@ async function main() {
 
     try {
       await queue.addAll(fileTasks)
-    } catch {
+    } catch (except) {
+      if (except.name) {
+        console.warn(`${except.name}: ${except.message}`)
+      }
+
       process.exit(1)
     }
   }
