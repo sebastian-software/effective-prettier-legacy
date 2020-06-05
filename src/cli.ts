@@ -108,7 +108,12 @@ async function main() {
 
   if (fileTasks.length > 0) {
     preboot()
-    await queue.addAll(fileTasks)
+
+    try {
+      await queue.addAll(fileTasks)
+    } catch {
+      process.exit(1)
+    }
   }
 }
 

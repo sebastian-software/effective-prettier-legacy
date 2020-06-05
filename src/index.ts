@@ -13,7 +13,6 @@ import { APP_ROOT_PATH } from "./util"
 import { FormatOptions } from "./types"
 import { debug } from "./log"
 
-const FILE_OPTIONS: BufferEncoding = "utf-8"
 const PRETTIER_IGNORE_FILENAME = ".prettierignore"
 
 async function executePrettier(
@@ -48,8 +47,11 @@ async function executePrettier(
 
 const ESLINT_SUPPORTED = new Set([ ".js", ".jsx", ".mjs", ".ts", ".tsx" ])
 
-async function executeEslint(fileInput, filePath, options: FormatOptions) {
+async function executeEslint(fileInput: string, filePath: string, options: FormatOptions) {
   if (!ESLINT_SUPPORTED.has(extname(filePath))) {
+    if (options.verbose) {
+      debug(`File ${filePath} is not compatible to ESLint. Skipping.`)
+    }
     return null
   }
 
@@ -67,14 +69,28 @@ async function executeEslint(fileInput, filePath, options: FormatOptions) {
     return null
   }
 
-  if (options.verbose) {
-    if (fileResult.messages) {
-      fileResult.messages.forEach((messageEntry) => {
+  let hasFatalError = false
+  if (fileResult.messages) {
+    fileResult.messages.forEach((messageEntry) => {
+      if (messageEntry.fatal) {
+        hasFatalError = true
+      }
+
+      if (options.verbose || messageEntry.fatal) {
+        const titleInfo = messageEntry.fatal ? "Error" : "Info"
+        const lineInfo = messageEntry.line ? `@${messageEntry.line}` : ""
+        const ruleInfo = messageEntry.ruleId ? `[${messageEntry.ruleId}]` : ""
+        const formatter = messageEntry.fatal ? chalk.red : chalk.dim
+
         debug(
-          `${filePath}: ${messageEntry.ruleId}: ${messageEntry.message} @${messageEntry.line}`
+          formatter(`${titleInfo}${ruleInfo}: ${filePath}${lineInfo}: ${messageEntry.message}`)
         )
-      })
-    }
+      }
+    })
+  }
+
+  if (hasFatalError) {
+    throw new Error("ESLint processing failed!")
   }
 
   return fileResult.output ? fileResult.output : false
@@ -154,7 +170,7 @@ async function formatText(fileInput: string, filePath: string, options: FormatOp
 }
 
 async function formatFile(filePath: string, options) {
-  const fileInput = (await fs.readFile(filePath, FILE_OPTIONS)) as string
+  const fileInput = await fs.readFile(filePath, { encoding: "utf8" })
   const fileOutput = await formatText(fileInput, filePath, options)
 
   if (fileInput !== fileOutput) {
@@ -162,7 +178,7 @@ async function formatFile(filePath: string, options) {
       debug(`Writing changes to: ${filePath}...`)
     }
 
-    await fs.writeFile(filePath, fileOutput, FILE_OPTIONS)
+    await fs.writeFile(filePath, fileOutput, { encoding: "utf8" })
   }
 }
 

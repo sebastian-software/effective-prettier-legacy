@@ -1,6 +1,7 @@
 import path from "path"
 
 import { CLIEngine } from "eslint"
+import chalk from "chalk"
 
 import { debug } from "./log"
 import { APP_ROOT_PATH, ESLINT_ROOT_PATH } from "./util"
@@ -95,13 +96,18 @@ export function getEslintInstance(filePath: string, flags: FormatOptions = {}) {
   if (flags.debug) {
     debug("Enabled rules:", fileRules)
   } else if (flags.verbose) {
-    debug(`Enabled ${Object.keys(fileRules).length} rules`)
+    debug(`Enabled ${Object.keys(fileRules).length} auto-fixable rules`)
   }
 
   // Warn on "error"-level auto-fixable rules
   Object.entries(fileRules).forEach(([ name, rule ]) => {
     if (getRuleLevel(rule) === "error") {
-      debug(`Hint: Rule "${name}" is auto-fixable and need not be set to level error!`, rule)
+      debug(
+        chalk.yellow(
+          `Hint: Rule "${name}" is auto-fixable and need not be set to level error!`
+        ),
+        rule
+      )
     }
   })
 
