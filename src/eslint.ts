@@ -122,7 +122,6 @@ export function getEslintInstance(filePath: string, flags: FormatOptions = {}) {
   // Force override for prevent building up type information
   const parserOptions = rawFileConfig.parserOptions
   if (parserOptions && !flags.enableTyped) {
-    console.log("DELETE!!!")
     delete parserOptions.project
   }
 
