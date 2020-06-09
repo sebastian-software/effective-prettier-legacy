@@ -12,7 +12,49 @@
 [travis-img]: https://badgen.net/travis/sebastian-software/effective-prettier?label=unix%20build
 [appveyor-img]: https://badgen.net/appveyor/ci/swernerx/effective-prettier?label=windows%20build
 
-A very lean alternative to [prettier-eslint](https://github.com/prettier/prettier-eslint) which focuses on the basics of integrating Prettier and linting infrastructure into one tool. Currently supports `eslint` only for the linting aspect. Includes a CLI tool called `effective-prettier`.
+Originally started as a very lean alternative to [prettier-eslint](https://github.com/prettier/prettier-eslint) which focuses on the basics of integrating Prettier and linting infrastructure into one tool. Includes a CLI tool called `effective-prettier`. Nowadays it supports both `eslint` and `stylelint` together with `prettier`. It executes these tool in memory using their APIs instead of touching files multiple times on the disc.
+
+## Usage
+
+Files are only written and touched when changes were made to the content.
+
+Ignore files by Prettier and ESLint/Stylelint are used in combination for all files.
+
+Massively faster when using a glob pattern through its threading infrastructure.
+
+### JavaScript
+
+```shell
+effective-prettier util.js
+```
+
+### CSS
+
+```shell
+effective-prettier styles.css
+```
+
+### Markdown
+
+```shell
+effective-prettier text.md
+```
+
+### Mixed
+
+```shell
+effective-prettier "**/*.{js,jsx,ts,tsx,json,md,yaml,yml}"
+```
+
+## CLI Options
+
+```
+--verbose, -v       Increase log level
+--auto-root, -a     Detecting project root folder automatically
+--skip-ignore, -s   Skip checking any ignore files
+--enable-typed, -t  Enable ESLint rules which require types (slower)
+--concurrency       Setting the number of instances to be executed in parallel
+```
 
 ## License
 

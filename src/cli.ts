@@ -46,7 +46,7 @@ async function main() {
   const cli = meow(
     `
   Usage
-    $ prettier-eslint <input>
+    $ effective-prettier <input|glob>
 
   Options
     --verbose, -v  Increase log level
@@ -56,7 +56,7 @@ async function main() {
     --concurrency  Setting the number of instances to be executed in parallel
 
   Examples
-    $ prettier-eslint filename.js --verbose
+    $ effective-prettier filename.js --verbose
 `,
     {
       flags: {
