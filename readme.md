@@ -14,6 +14,12 @@
 
 Originally started as a very lean alternative to [prettier-eslint](https://github.com/prettier/prettier-eslint) which focuses on the basics of integrating Prettier and linting infrastructure into one tool. Includes a CLI tool called `effective-prettier`. Nowadays it supports both `eslint` and `stylelint` together with `prettier`. It executes these tool in memory using their APIs instead of touching files multiple times on the disc.
 
+## Problem
+
+For some users linting rules tweak the behavior of prettier results. Combining both tools is typically quite a
+configuration hassle. The easier way to write a new tool which combines both... or even all three of the most
+relevant front-end tools into one CLI. Welcome `effective-prettier`.
+
 ## Features
 
 You are in one solution to combine linting with prettification:
