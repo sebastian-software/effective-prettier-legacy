@@ -3,7 +3,7 @@ import styled from "styled-components"
 
 const Button = styled.a`
   display: inline-block;
-  border-radius: 3px;
+  border-radius: 0px;
   font: 12px Arial;
 `
 
