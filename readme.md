@@ -14,6 +14,21 @@
 
 Originally started as a very lean alternative to [prettier-eslint](https://github.com/prettier/prettier-eslint) which focuses on the basics of integrating Prettier and linting infrastructure into one tool. Includes a CLI tool called `effective-prettier`. Nowadays it supports both `eslint` and `stylelint` together with `prettier`. It executes these tool in memory using their APIs instead of touching files multiple times on the disc.
 
+## Features
+
+You are in one solution to combine linting with prettification:
+
+- ✅ Prettier
+- ✅ ESLint
+- ✅ Stylelint
+
+With a hell lot of nice gimmicks:
+
+- In memory transformation + write on change only
+- Respects ignore files
+- File format auto-detection
+- Multi-threading with glob-based file lists
+
 ## Usage
 
 Files are only written and touched when changes were made to the content.
