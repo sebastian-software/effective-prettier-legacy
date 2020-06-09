@@ -7,6 +7,7 @@ import { extname, relative, resolve } from "path"
 import chalk from "chalk"
 import figures from "figures"
 import prettier from "prettier"
+import stylelint from "stylelint"
 
 import { getEslintInstance } from "./eslint"
 import { APP_ROOT_PATH } from "./util"
@@ -105,8 +106,13 @@ async function executeStylelint(fileInput: string, filePath: string, options: Fo
     return null
   }
 
+  const result = await stylelint.lint({
+    fix: true,
+    code: fileInput,
+    codeFilename: filePath
+  })
 
-  console.log("Formatting with Stylelint...")
+  return result.output
 }
 
 enum TrackingStatus {
