@@ -31,4 +31,16 @@ describe("Auto formatting", () => {
   test("Markdown 1", async () => {
     expect(await testFormat("./src/fixtures/markdown-1.md")).toMatchSnapshot()
   })
+
+  test("CSS in JS - JSS", async () => {
+    expect(await testFormat("./src/fixtures/cssinjs-jss.jsx")).toMatchSnapshot()
+  })
+
+  test("CSS in JS - Styled Components", async () => {
+    expect(await testFormat("./src/fixtures/cssinjs-styled.jsx")).toMatchSnapshot()
+  })
+
+  test("HTML with CSS 1", async () => {
+    expect(await testFormat("./src/fixtures/htmlcss-1.html")).toMatchSnapshot()
+  })
 })
