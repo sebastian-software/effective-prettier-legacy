@@ -1,6 +1,6 @@
 /* eslint-disable max-statements */
 
-import { BufferEncoding, promises as fs } from "fs"
+import { promises as fs } from "fs"
 import { performance } from "perf_hooks"
 import { extname, relative, resolve } from "path"
 
