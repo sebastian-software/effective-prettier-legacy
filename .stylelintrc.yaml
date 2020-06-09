@@ -4,3 +4,4 @@ rules:
   length-zero-no-unit: true
   color-hex-length: short
   color-hex-case: lower
+  unit-case: lower
