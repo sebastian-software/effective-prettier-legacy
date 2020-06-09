@@ -45,7 +45,8 @@ async function executePrettier(
   return fileOutput
 }
 
-const ESLINT_SUPPORTED = new Set([ ".js", ".jsx", ".mjs", ".ts", ".tsx" ])
+const ESLINT_SUPPORTED = new Set([".js", ".jsx", ".mjs", ".ts", ".tsx"])
+const STYLELINT_SUPPORTED = new Set([".js", ".jsx", ".mjs", ".ts", ".tsx", ".css", ".scss", ".sass", ".html"])
 
 async function executeEslint(fileInput: string, filePath: string, options: FormatOptions) {
   if (!ESLINT_SUPPORTED.has(extname(filePath))) {
@@ -96,6 +97,18 @@ async function executeEslint(fileInput: string, filePath: string, options: Forma
   return fileResult.output ? fileResult.output : false
 }
 
+async function executeStylelint(fileInput: string, filePath: string, options: FormatOptions) {
+  if (!STYLELINT_SUPPORTED.has(extname(filePath))) {
+    if (options.verbose) {
+      debug(`File ${filePath} is not compatible to StyleLint. Skipping.`)
+    }
+    return null
+  }
+
+
+  console.log("Formatting with Stylelint...")
+}
+
 enum TrackingStatus {
   executed,
   applied
@@ -107,6 +120,7 @@ interface ToolTracking {
   stylelint?: TrackingStatus
 }
 
+// eslint-disable-next-line complexity
 async function formatText(fileInput: string, filePath: string, options: FormatOptions) {
   const toolTracking: ToolTracking = {}
   const startTime = performance.now()
@@ -128,6 +142,15 @@ async function formatText(fileInput: string, filePath: string, options: FormatOp
     if (eslintResult) {
       toolTracking.eslint = TrackingStatus.applied
       fileOutput = eslintResult
+    }
+  }
+
+  const stylelintResult = await executeStylelint(fileOutput, filePath, options)
+  if (stylelintResult != null) {
+    toolTracking.stylelint = TrackingStatus.executed
+    if (stylelintResult) {
+      toolTracking.stylelint = TrackingStatus.applied
+      fileOutput = stylelintResult
     }
   }
 
