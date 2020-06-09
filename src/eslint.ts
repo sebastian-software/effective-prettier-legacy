@@ -70,7 +70,7 @@ export function getEslintInstance(filePath: string, flags: FormatOptions = {}) {
   const rules = localEslint.getRules()
   const fileRules = rawFileConfig.rules
 
-  Object.entries(fileRules).forEach(([name, rule]) => {
+  Object.entries(fileRules).forEach(([ name, rule ]) => {
     const ruleImpl = rules.get(name)
     if (ruleImpl) {
       if (getRuleLevel(rule) === "off") {
@@ -82,15 +82,23 @@ export function getEslintInstance(filePath: string, flags: FormatOptions = {}) {
       if (ruleImpl.meta && ruleImpl.meta.fixable) {
         // That's a flag being introduced by @typescript-eslint
         // to mark rules which require the type checker
-        if (ruleImpl.meta.docs && ruleImpl.meta.docs.requiresTypeChecking && !flags.enableTyped) {
+        if (
+          ruleImpl.meta.docs &&
+          ruleImpl.meta.docs.requiresTypeChecking &&
+          !flags.enableTyped
+        ) {
           // Disable type-based formatting rule
           // This is typically too slow for regular execution
           delete fileRules[name]
           if (flags.debug) {
-            debug(`- Disabled type-based auto-fixable rule: ${name} [${ruleImpl.meta.type}] [fixes: ${ruleImpl.meta.fixable}]`)
+            debug(
+              `- Disabled type-based auto-fixable rule: ${name} [${ruleImpl.meta.type}] [fixes: ${ruleImpl.meta.fixable}]`
+            )
           }
         } else if (flags.debug) {
-          debug(`- Auto fixing: ${name} [${ruleImpl.meta.type}] [fixes: ${ruleImpl.meta.fixable}]`)
+          debug(
+            `- Auto fixing: ${name} [${ruleImpl.meta.type}] [fixes: ${ruleImpl.meta.fixable}]`
+          )
         }
       } else {
         // Disable all non-fixable rules
@@ -108,7 +116,7 @@ export function getEslintInstance(filePath: string, flags: FormatOptions = {}) {
   }
 
   // Warn on "error"-level auto-fixable rules
-  Object.entries(fileRules).forEach(([name, rule]) => {
+  Object.entries(fileRules).forEach(([ name, rule ]) => {
     if (getRuleLevel(rule) === "error") {
       debug(
         chalk.yellow(
