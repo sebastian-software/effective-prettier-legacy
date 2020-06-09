@@ -5,10 +5,9 @@ const useStyles = createUseStyles({
   button: {
     font: "Arial",
     fontSize: 12,
-    marginTop: '0px',
     borderRadius: '0px',
     '&:hover': {
-      background: 'blue'
+      background: '#2200DD'
     }
   }
 })

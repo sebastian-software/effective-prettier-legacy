@@ -2,9 +2,13 @@ import React from "react"
 import styled from "styled-components"
 
 const Button = styled.a`
-  display: inline-block;
+  font: Arial;
+  font-size: 12;
   border-radius: 0px;
-  font: 12px Arial;
+
+  &:hover: {
+    background: #2200DD
+  }
 `
 
 export function ToolbarButton() {
