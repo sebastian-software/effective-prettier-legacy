@@ -2,7 +2,7 @@
 
 [sponsor]: https://www.sebastian-software.de
 [deps]: https://david-dm.org/sebastian-software/effective-prettier
-[npm]: https://www.npmjs.com/package/@effective/prettier-eslint
+[npm]: https://www.npmjs.com/package/@effective/effective-prettier
 [travis]: https://travis-ci.org/sebastian-software/effective-prettier
 [appveyor]: https://ci.appveyor.com/project/swernerx/effective-prettier/branch/master
 [sponsor-img]: https://badgen.net/badge/Sponsored%20by/Sebastian%20Software/692446
