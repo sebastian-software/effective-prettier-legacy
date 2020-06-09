@@ -1,5 +1,66 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Auto formatting CSS in JS - JSS 1`] = `
+"import React from \\"react\\"
+import { createUseStyles } from \\"react-jss\\"
+
+const useStyles = createUseStyles({
+  button: {
+    font: \\"Arial\\",
+    fontSize: 12,
+    borderRadius: \\"0px\\",
+    \\"&:hover\\": {
+      background: \\"#2200DD\\"
+    }
+  }
+})
+
+const { classes } = jss.createStyleSheet(styles).attach()
+
+export function ToolbarButton() {
+  const classes = useStyles()
+  return <Button className={classes.button} />
+}
+"
+`;
+
+exports[`Auto formatting CSS in JS - Styled Components 1`] = `
+"import React from \\"react\\"
+import styled from \\"styled-components\\"
+
+const Button = styled.a\`
+  font: Arial;
+  font-size: 12;
+  border-radius: 0;
+
+  &:hover: {
+    background: #20d;
+  }
+\`
+
+export function ToolbarButton() {
+  return <Button />
+}
+"
+`;
+
+exports[`Auto formatting HTML with CSS 1 1`] = `
+"<html>
+  <style>
+    button {
+      font: Arial;
+      font-size: 12;
+      border-radius: 0;
+    }
+
+    button:hover {
+      background: #20d;
+    }
+  </style>
+</html>
+"
+`;
+
 exports[`Auto formatting JSON 1 1`] = `
 "{
   \\"name\\": \\"@effective/prettier\\",
