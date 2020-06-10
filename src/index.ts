@@ -110,8 +110,10 @@ async function executeStylelint(fileInput: string, filePath: string, options: Fo
     return
   }
 
+  let result
+
   try {
-    const result = await stylelint.lint({
+    result = await stylelint.lint({
       fix: true,
       code: fileInput,
       codeFilename: filePath
