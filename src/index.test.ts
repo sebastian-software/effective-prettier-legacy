@@ -2,6 +2,8 @@ import { promises as fs } from "fs"
 
 import prettier from "."
 
+jest.setTimeout(30000)
+
 async function testFormat(filePath) {
   const input = await fs.readFile(filePath, { encoding: "utf-8" })
   const output = await prettier.formatText(input, filePath, {
