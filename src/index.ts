@@ -50,9 +50,11 @@ const ESLINT_SUPPORTED = new Set([".js", ".jsx", ".mjs", ".ts", ".tsx"])
 const STYLELINT_SUPPORTED = new Set([".js", ".jsx", ".mjs", ".ts", ".tsx", ".css", ".scss", ".sass", ".html"])
 
 async function executeEslint(fileInput: string, filePath: string, options: FormatOptions) {
+  const fileRelativePath = relative(process.cwd(), filePath)
+
   if (!ESLINT_SUPPORTED.has(extname(filePath))) {
     if (options.verbose) {
-      debug(`File ${filePath} is not compatible to ESLint. Skipping.`)
+      debug(`File ${fileRelativePath} is not compatible to ESLint. Skipping.`)
     }
     return null
   }
@@ -62,7 +64,7 @@ async function executeEslint(fileInput: string, filePath: string, options: Forma
 
   if (report.usedDeprecatedRules) {
     report.usedDeprecatedRules.forEach((deprecationMessage) => {
-      debug(`Configuration uses deprecated rule: ${deprecationMessage.ruleId}!`)
+      debug(`ESLint configuration uses deprecated rule: ${deprecationMessage.ruleId}!`)
     })
   }
 
@@ -85,7 +87,7 @@ async function executeEslint(fileInput: string, filePath: string, options: Forma
         const formatter = messageEntry.fatal ? chalk.red : chalk.dim
 
         debug(
-          formatter(`${titleInfo}${ruleInfo}: ${filePath}${lineInfo}: ${messageEntry.message}`)
+          formatter(`${titleInfo}${ruleInfo}: ${fileRelativePath}${lineInfo}: ${messageEntry.message}`)
         )
       }
     })
@@ -99,18 +101,32 @@ async function executeEslint(fileInput: string, filePath: string, options: Forma
 }
 
 async function executeStylelint(fileInput: string, filePath: string, options: FormatOptions) {
+  const fileRelativePath = relative(process.cwd(), filePath)
+
   if (!STYLELINT_SUPPORTED.has(extname(filePath))) {
     if (options.verbose) {
-      debug(`File ${filePath} is not compatible to StyleLint. Skipping.`)
+      debug(`File ${fileRelativePath} is not compatible to StyleLint. Skipping.`)
     }
-    return null
+    return
   }
 
-  const result = await stylelint.lint({
-    fix: true,
-    code: fileInput,
-    codeFilename: filePath
-  })
+  try {
+    const result = await stylelint.lint({
+      fix: true,
+      code: fileInput,
+      codeFilename: filePath
+    })
+
+  } catch (except) {
+    if (except.message.includes("No configuration provided for")) {
+      if (options.verbose) {
+        debug(`File ${fileRelativePath} does not have a Stylelint configuration. Skipping.`)
+      }
+      return
+    }
+
+    throw except
+  }
 
   return result.output
 }
