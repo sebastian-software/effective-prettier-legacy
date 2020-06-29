@@ -6,7 +6,7 @@ let channel
 try {
   // eslint-disable-next-line import/no-unresolved, @typescript-eslint/no-var-requires
   const vscode = require("vscode")
-  channel = vscode.window.createOutputChannel("Prettier ESLint") as OutputChannel
+  channel = vscode.window.createOutputChannel("✪ Prettier") as OutputChannel
 } catch {
   // pass
 }
