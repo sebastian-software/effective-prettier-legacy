@@ -8,6 +8,6 @@
     "publish": true
   },
   "github": {
-    "release": true
+    "release": false
   }
 }
