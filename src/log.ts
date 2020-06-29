@@ -1,25 +1,49 @@
-// eslint-disable-next-line import/no-unresolved
-import type { OutputChannel } from "vscode"
+export type Messages = (string | number)[]
 
-let channel
-
-try {
-  // eslint-disable-next-line import/no-unresolved, @typescript-eslint/no-var-requires
-  const vscode = require("vscode")
-  channel = vscode.window.createOutputChannel("✪ Prettier") as OutputChannel
-} catch {
-  // pass
+export interface LoggingApi {
+  warn: (...messages: Messages) => void
+  error: (...messages: Messages) => void
+  info: (...messages: Messages) => void
+  debug: (...messages: Messages) => void
 }
 
-let impl
-if (channel) {
-  impl = (...messages) => {
-    channel.appendLine(messages.join("\n"))
+const impl: LoggingApi = {
+  debug: console.debug.bind(console),
+  info: console.info.bind(console),
+  warn: console.warn.bind(console),
+  error: console.error.bind(console)
+}
+
+export function connectLogger(api: LoggingApi): void {
+  if (api.warn) {
+    impl.warn = api.warn
   }
-} else {
-  impl = console.log.bind(console)
+
+  if (api.error) {
+    impl.error = api.error
+  }
+
+  if (api.info) {
+    impl.info = api.info
+  }
+
+  if (api.debug) {
+    impl.debug = api.debug
+  }
 }
 
-export function debug(...messages) {
-  impl(...messages)
+export function warn(...messages: Messages): void {
+  impl.warn(...messages)
+}
+
+export function error(...messages: Messages): void {
+  impl.error(...messages)
+}
+
+export function info(...messages: Messages): void {
+  impl.info(...messages)
+}
+
+export function debug(...messages: Messages): void {
+  impl.debug(...messages)
 }

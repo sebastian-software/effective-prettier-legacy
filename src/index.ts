@@ -12,7 +12,7 @@ import stylelint from "stylelint"
 import { getEslintInstance } from "./eslint"
 import { APP_ROOT_PATH } from "./util"
 import { FormatOptions } from "./types"
-import { debug } from "./log"
+import { debug, warn, error, connectLogger } from "./log"
 
 const PRETTIER_IGNORE_FILENAME = ".prettierignore"
 
@@ -64,7 +64,7 @@ async function executeEslint(fileInput: string, filePath: string, options: Forma
 
   if (report.usedDeprecatedRules) {
     report.usedDeprecatedRules.forEach((deprecationMessage) => {
-      debug(`ESLint configuration uses deprecated rule: ${deprecationMessage.ruleId}!`)
+      warn(`ESLint configuration uses deprecated rule: ${deprecationMessage.ruleId}!`)
     })
   }
 
@@ -86,7 +86,8 @@ async function executeEslint(fileInput: string, filePath: string, options: Forma
         const ruleInfo = messageEntry.ruleId ? `[${messageEntry.ruleId}]` : ""
         const formatter = messageEntry.fatal ? chalk.red : chalk.dim
 
-        debug(
+        const command = messageEntry.fatal ? error : debug
+        command(
           formatter(`${titleInfo}${ruleInfo}: ${fileRelativePath}${lineInfo}: ${messageEntry.message}`)
         )
       }
@@ -236,6 +237,7 @@ const clearPrettierConfigCache = prettier.clearConfigCache
 const version = process.env.BUNDLE_VERSION
 
 export default {
+  connectLogger,
   getPrettierSupportInfo,
   getPrettierFileInfo,
   clearPrettierConfigCache,
