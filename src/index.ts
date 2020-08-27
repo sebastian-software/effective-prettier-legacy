@@ -128,6 +128,13 @@ async function executeStylelint(fileInput: string, filePath: string, options: Fo
       return
     }
 
+    if (except.message.includes("result.apply is not a function")) {
+      if (options.verbose) {
+        debug(`File ${fileRelativePath} ws not processable by Stylelint. Skipping.`)
+      }
+      return
+    }
+
     throw except
   }
 
