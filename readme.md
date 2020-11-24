@@ -1,12 +1,10 @@
-# Effective Prettier (Effective Project)<br/>[![Sponsored by][sponsor-img]][sponsor] [![Version][npm-version-img]][npm] [![Downloads][npm-downloads-img]][npm] [![Build Status Unix][travis-img]][travis] [![Build Status Windows][appveyor-img]][appveyor] [![Dependencies][deps-img]][deps]
+# Effective Prettier (Effective Project)<br/>[![Sponsored by][sponsor-img]][sponsor] [![Version][npm-version-img]][npm] [![Downloads][npm-downloads-img]][npm] [![Build Status Unix][travis-img]][travis] [![Build Status Windows][appveyor-img]][appveyor]
 
 [sponsor]: https://www.sebastian-software.de
-[deps]: https://david-dm.org/sebastian-software/effective-prettier
 [npm]: https://www.npmjs.com/package/@effective/prettier
 [travis]: https://travis-ci.org/sebastian-software/effective-prettier
 [appveyor]: https://ci.appveyor.com/project/swernerx/effective-prettier/branch/master
 [sponsor-img]: https://badgen.net/badge/Sponsored%20by/Sebastian%20Software/692446
-[deps-img]: https://badgen.net/david/dep/sebastian-software/effective-prettier
 [npm-downloads-img]: https://badgen.net/npm/dm/@effective/prettier
 [npm-version-img]: https://badgen.net/npm/v/@effective/prettier
 [travis-img]: https://badgen.net/travis/sebastian-software/effective-prettier?label=unix%20build
