@@ -12,7 +12,7 @@ import stylelint from "stylelint"
 import { getEslintInstance } from "./eslint"
 import { APP_ROOT_PATH } from "./util"
 import { FormatOptions } from "./types"
-import { debug, warn, error, connectLogger } from "./log"
+import { connectLogger, debug, error, warn } from "./log"
 
 const PRETTIER_IGNORE_FILENAME = ".prettierignore"
 
@@ -46,8 +46,18 @@ async function executePrettier(
   return fileOutput
 }
 
-const ESLINT_SUPPORTED = new Set([".js", ".jsx", ".mjs", ".ts", ".tsx"])
-const STYLELINT_SUPPORTED = new Set([".js", ".jsx", ".mjs", ".ts", ".tsx", ".css", ".scss", ".sass", ".html"])
+const ESLINT_SUPPORTED = new Set([ ".js", ".jsx", ".mjs", ".ts", ".tsx" ])
+const STYLELINT_SUPPORTED = new Set([
+  ".js",
+  ".jsx",
+  ".mjs",
+  ".ts",
+  ".tsx",
+  ".css",
+  ".scss",
+  ".sass",
+  ".html"
+])
 
 async function executeEslint(fileInput: string, filePath: string, options: FormatOptions) {
   const fileRelativePath = relative(process.cwd(), filePath)
@@ -88,7 +98,9 @@ async function executeEslint(fileInput: string, filePath: string, options: Forma
 
         const command = messageEntry.fatal ? error : debug
         command(
-          formatter(`${titleInfo}${ruleInfo}: ${fileRelativePath}${lineInfo}: ${messageEntry.message}`)
+          formatter(
+            `${titleInfo}${ruleInfo}: ${fileRelativePath}${lineInfo}: ${messageEntry.message}`
+          )
         )
       }
     })
@@ -119,7 +131,6 @@ async function executeStylelint(fileInput: string, filePath: string, options: Fo
       code: fileInput,
       codeFilename: filePath
     })
-
   } catch (except) {
     if (except.message.includes("No configuration provided for")) {
       if (options.verbose) {
