@@ -8,9 +8,9 @@ const useStyles = createUseStyles({
   button: {
     font: \\"Arial\\",
     fontSize: 12,
-    borderRadius: \\"0px\\",
+    borderRadius: \\"0\\",
     \\"&:hover\\": {
-      background: \\"#2200DD\\"
+      background: \\"#20d\\"
     }
   }
 })
