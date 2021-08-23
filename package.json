@@ -36,7 +36,7 @@
     "figures": "^3.2.0",
     "glob-parent": "^6.0.1",
     "globby": "^11.0.4",
-    "is-path-inside": "^4.0.0",
+    "is-path-inside": "^3.0.3",
     "meow": "^10.1.1",
     "p-queue": "^7.1.0",
     "physical-cpu-count": "^2.0.0",
