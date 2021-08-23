@@ -38,7 +38,7 @@
     "globby": "^11.0.4",
     "is-path-inside": "^3.0.3",
     "meow": "^9.0.0",
-    "p-queue": "^7.1.0",
+    "p-queue": "^6.6.2",
     "physical-cpu-count": "^2.0.0",
     "prettier": "^2.3.2",
     "stylelint": "^13.13.1"
